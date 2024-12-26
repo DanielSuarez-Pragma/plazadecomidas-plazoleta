@@ -1,0 +1,26 @@
+# Configuración del servidor
+server:
+  port: 8085
+
+# Configuración de la base de datos
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/plazoleta-PlazaComidas
+    username: postgres
+    password: dan34981
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+# Configuración de Feign Client
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: FULL
+
+# Configuración del microservicio de usuarios
+users-service:
+  url: http://localhost:8080
