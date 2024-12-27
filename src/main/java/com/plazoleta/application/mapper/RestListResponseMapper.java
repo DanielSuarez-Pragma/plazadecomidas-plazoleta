@@ -16,6 +16,10 @@ public interface RestListResponseMapper {
         if (restaurant == null) {
             return null; // Manejo de nulos
         }
+        return getRestListResponse(restaurant);
+    }
+
+    private RestListResponse getRestListResponse(Restaurant restaurant) {
         RestListResponse response = new RestListResponse();
         response.setName(restaurant.getName());
         response.setAddress(restaurant.getAddress());
@@ -27,15 +31,7 @@ public interface RestListResponseMapper {
 
 
     default List<RestListResponse> toResposeList(List<Restaurant> restList) {
-        return restList.stream().map(restaurant -> {
-            RestListResponse response = new RestListResponse();
-            response.setName(restaurant.getName());
-            response.setAddress(restaurant.getAddress());
-            response.setPhone(restaurant.getPhone());
-            response.setLogoUrl(restaurant.getLogoUrl());
-            response.setNit(restaurant.getNit());
-            return response;
-        }).toList();
+        return restList.stream().map(this::getRestListResponse).toList();
     }
 
 }
