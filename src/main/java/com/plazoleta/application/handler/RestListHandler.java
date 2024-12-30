@@ -4,8 +4,8 @@ import com.plazoleta.application.dto.RestListRequest;
 import com.plazoleta.application.dto.RestListResponse;
 import com.plazoleta.application.mapper.RestListRequestMapper;
 import com.plazoleta.application.mapper.RestListResponseMapper;
-import com.plazoleta.dominio.api.IRestaurantServicePort;
-import com.plazoleta.dominio.model.Restaurant;
+import com.plazoleta.domain.api.IRestaurantServicePort;
+import com.plazoleta.domain.model.Restaurant;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.plazoleta.infraestructure.out.jpa.mapper;
 
-import com.plazoleta.dominio.model.Restaurant;
+import com.plazoleta.domain.model.Restaurant;
 import com.plazoleta.infraestructure.out.jpa.entity.RestaurantEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

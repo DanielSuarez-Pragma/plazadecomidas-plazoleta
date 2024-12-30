@@ -1,4 +1,4 @@
-package com.plazoleta.dominio.model;
+package com.plazoleta.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

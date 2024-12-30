@@ -1,6 +1,6 @@
 package com.plazoleta.infraestructure.out.jpa.adapter;
 
-import com.plazoleta.dominio.spi.IUserPersistencePort;
+import com.plazoleta.domain.spi.IUserPersistencePort;
 import com.plazoleta.infraestructure.input.rest.client.UserFeingClient;
 import lombok.RequiredArgsConstructor;
 
@@ -11,7 +11,6 @@ public class UserAdapter implements IUserPersistencePort {
 
     @Override
     public Long getUserById(Long id) {
-        System.out.println("getUserById-UserFeingClient"+ userFeingClient.getUserById(id).getRoleId());
         return userFeingClient.getUserById(id).getRoleId();
     }
 }

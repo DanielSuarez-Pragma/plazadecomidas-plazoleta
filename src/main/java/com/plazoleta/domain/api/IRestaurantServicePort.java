@@ -1,10 +1,10 @@
-package com.plazoleta.dominio.spi;
+package com.plazoleta.domain.api;
 
-import com.plazoleta.dominio.model.Restaurant;
+import com.plazoleta.domain.model.Restaurant;
 
 import java.util.List;
 
-public interface IRestaurantPersistencePort {
+public interface IRestaurantServicePort {
     void saveRestaurant(Restaurant restaurant);
     Restaurant getRestaurant(Long id);
     List<Restaurant> getAllRestaurants();

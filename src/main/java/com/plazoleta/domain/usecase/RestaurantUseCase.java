@@ -1,9 +1,9 @@
-package com.plazoleta.dominio.usecase;
+package com.plazoleta.domain.usecase;
 
-import com.plazoleta.dominio.api.IRestaurantServicePort;
-import com.plazoleta.dominio.model.Restaurant;
-import com.plazoleta.dominio.spi.IRestaurantPersistencePort;
-import com.plazoleta.dominio.spi.IUserPersistencePort;
+import com.plazoleta.domain.api.IRestaurantServicePort;
+import com.plazoleta.domain.model.Restaurant;
+import com.plazoleta.domain.spi.IRestaurantPersistencePort;
+import com.plazoleta.domain.spi.IUserPersistencePort;
 
 import java.util.List;
 
