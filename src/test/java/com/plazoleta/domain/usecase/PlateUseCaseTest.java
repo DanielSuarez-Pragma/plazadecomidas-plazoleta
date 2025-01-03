@@ -104,6 +104,36 @@ class PlateUseCaseTest {
     }
 
     @Test
+    void updatePlate() {
+        // Configuración de datos simulados
+        Plate existingPlate = new Plate(1L, "Pasta", 1L, "Old description", 12.0, 1L, "urlImage", true);
+        Plate updatedPlate = new Plate(1L, "Pasta", 1L, "Updated description", 15.0, 1L, "urlImage", true);
+
+        // Simular el comportamiento
+        when(platePersistencePort.getPlateById(1L)).thenReturn(existingPlate);
+        doNothing().when(platePersistencePort).updatePlate(any(Plate.class));
+
+        // Ejecutar el caso de uso
+        plateUseCase.updatePlate(updatedPlate);
+
+        // Verificar que se llamó primero al getPlateById
+        verify(platePersistencePort, times(1)).getPlateById(1L);
+
+        // Verificar que el updatePlate se llamó con los datos correctos
+        verify(platePersistencePort).updatePlate(
+                argThat(plateUpdate ->
+                        plate.getId().equals(1L) &&
+                                plate.getName().equals("Pasta") &&
+                                plate.getDescription().equals("Updated description") &&
+                                plate.getPrice().equals(15.0) &&
+                                plate.getRestaurantId().equals(1L) &&
+                                plate.getImageUrl().equals("urlImage") &&
+                                plate.getActive().equals(true)
+                )
+        );
+    }
+
+    @Test
     void deletePlateById() {
         doNothing().when(platePersistencePort).deletePlateById(1L);
 

@@ -15,6 +15,9 @@ public interface IPlatePersistencePort {
     // Obtener todos los platos
     List<Plate> getAllPlates();
 
+    //Editar los platos
+    void updatePlate(Plate plate);
+
     // Eliminar un plato por ID
     void deletePlateById(Long id);
 }

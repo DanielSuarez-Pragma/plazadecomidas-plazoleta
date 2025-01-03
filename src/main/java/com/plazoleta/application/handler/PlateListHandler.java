@@ -2,6 +2,7 @@ package com.plazoleta.application.handler;
 
 import com.plazoleta.application.dto.PlateListRequest;
 import com.plazoleta.application.dto.PlateListResponse;
+import com.plazoleta.application.dto.PlateUpdateRequest;
 import com.plazoleta.application.mapper.PlateListRequestMapper;
 import com.plazoleta.application.mapper.PlateListResponseMapper;
 
@@ -54,6 +55,14 @@ public class PlateListHandler implements IPlateListHandler {
                 return plateListResponseMapper.toResponseDetailed(plate, categoryName, restaurantName);
             }).toList();
         }
+
+    @Override
+    public void updatePlateFromList(PlateUpdateRequest plateUpdateRequest) {
+        Plate newPlate = plateServicePort.getPlateById(plateUpdateRequest.getId());
+        newPlate.setDescription(plateUpdateRequest.getDescription());
+        newPlate.setPrice(plateUpdateRequest.getPrice());
+        plateServicePort.updatePlate(newPlate);
+    }
 
     @Override
     public void deletePlateFromList(Long id) {

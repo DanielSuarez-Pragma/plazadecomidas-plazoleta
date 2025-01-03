@@ -33,9 +33,9 @@ public class RestaurantRestController {
         return ResponseEntity.ok(restListHandler.getRestFromList(id));
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteRestFromId(@PathVariable Long userId) {
-        restListHandler.deleteRestFromList(userId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRestFromId(@PathVariable Long id) {
+        restListHandler.deleteRestFromList(id);
         return ResponseEntity.noContent().build();
     }
 }

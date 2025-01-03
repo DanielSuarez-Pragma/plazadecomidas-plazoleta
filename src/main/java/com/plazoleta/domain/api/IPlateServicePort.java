@@ -12,5 +12,7 @@ public interface IPlateServicePort {
 
     List<Plate> getAllPlates();
 
+    void updatePlate(Plate plate);
+
     void deletePlateById(Long id);
 }

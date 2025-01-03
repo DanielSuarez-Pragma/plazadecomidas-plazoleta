@@ -55,6 +55,27 @@ public class PlateUseCase implements IPlateServicePort {
     }
 
     @Override
+    public void updatePlate(Plate plate) {
+        // Obtener el plato una vez
+        Plate existingPlate = platePersistencePort.getPlateById(plate.getId());
+
+        // Verificar si el plato existe
+        if (existingPlate == null) {
+            throw new IllegalArgumentException("Plate not found");
+        }
+
+        // Actualizar los valores
+        existingPlate.setDescription(plate.getDescription());
+        existingPlate.setPrice(plate.getPrice());
+
+        // Guardar los cambios
+        platePersistencePort.updatePlate(existingPlate);
+    }
+
+
+
+
+    @Override
     public void deletePlateById(Long id) {
         platePersistencePort.deletePlateById(id);
     }
