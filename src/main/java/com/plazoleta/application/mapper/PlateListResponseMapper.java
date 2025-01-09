@@ -1,6 +1,6 @@
 package com.plazoleta.application.mapper;
 
-import com.plazoleta.application.dto.PlateListResponse;
+import com.plazoleta.application.dto.response.PlateListResponse;
 import com.plazoleta.domain.model.Plate;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

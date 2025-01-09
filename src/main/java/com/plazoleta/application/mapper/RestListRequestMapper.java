@@ -1,6 +1,6 @@
 package com.plazoleta.application.mapper;
 
-import com.plazoleta.application.dto.RestListRequest;
+import com.plazoleta.application.dto.request.RestListRequest;
 import com.plazoleta.domain.model.Restaurant;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

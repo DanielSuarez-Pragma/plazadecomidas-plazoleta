@@ -18,5 +18,6 @@ public class User {
     private String phone;
     private LocalDate birthDate;
     private String email;
+    private String password;
     private Long roleId;
 }

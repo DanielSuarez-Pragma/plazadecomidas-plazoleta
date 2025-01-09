@@ -50,6 +50,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.mockito:mockito-core'
 	testImplementation 'org.mockito:mockito-junit-jupiter'
+
+	implementation 'com.auth0:java-jwt:4.2.1'
 }
 
 dependencyManagement {

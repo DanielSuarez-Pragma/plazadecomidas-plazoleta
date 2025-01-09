@@ -1,8 +1,8 @@
 package com.plazoleta.application.handler;
 
-import com.plazoleta.application.dto.PlateListRequest;
-import com.plazoleta.application.dto.PlateListResponse;
-import com.plazoleta.application.dto.PlateUpdateRequest;
+import com.plazoleta.application.dto.request.PlateListRequest;
+import com.plazoleta.application.dto.response.PlateListResponse;
+import com.plazoleta.application.dto.request.PlateUpdateRequest;
 
 import java.util.List;
 

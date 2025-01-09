@@ -1,7 +1,7 @@
 package com.plazoleta.application.handler;
 
-import com.plazoleta.application.dto.RestListRequest;
-import com.plazoleta.application.dto.RestListResponse;
+import com.plazoleta.application.dto.request.RestListRequest;
+import com.plazoleta.application.dto.response.RestListResponse;
 
 import java.util.List;
 

@@ -13,4 +13,5 @@ public class UserAdapter implements IUserPersistencePort {
     public Long getUserById(Long id) {
         return userFeingClient.getUserById(id).getRoleId();
     }
+
 }

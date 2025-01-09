@@ -1,8 +1,8 @@
 package com.plazoleta.infraestructure.input.rest;
 
-import com.plazoleta.application.dto.PlateListRequest;
-import com.plazoleta.application.dto.PlateListResponse;
-import com.plazoleta.application.dto.PlateUpdateRequest;
+import com.plazoleta.application.dto.request.PlateListRequest;
+import com.plazoleta.application.dto.response.PlateListResponse;
+import com.plazoleta.application.dto.request.PlateUpdateRequest;
 import com.plazoleta.application.handler.IPlateListHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
