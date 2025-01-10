@@ -9,6 +9,6 @@ public interface IRestListHandler {
 
     void saveRestInList(RestListRequest restlistrequest);
     RestListResponse getRestFromList(Long id);
-    List<RestListResponse> getAllRestFromList();
+    List<RestListResponse> getAllRestFromList(int page, int size);
     void deleteRestFromList(Long id);
 }

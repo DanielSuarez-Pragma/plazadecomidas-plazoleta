@@ -26,10 +26,10 @@ public class RestaurantRestController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/getRests")
+    @GetMapping("/getRests/page/{page}/size/{size}")
     @PreAuthorize("hasAuthority('CLIENT')")
-    public ResponseEntity<List<RestListResponse>> getRestsFromList() {
-        return ResponseEntity.ok(restListHandler.getAllRestFromList());
+    public ResponseEntity<List<RestListResponse>> getRestsFromList(@PathVariable int page, @PathVariable int size) {
+        return ResponseEntity.ok(restListHandler.getAllRestFromList(page, size));
     }
 
     @GetMapping("/{id}")

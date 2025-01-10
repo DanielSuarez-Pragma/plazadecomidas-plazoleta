@@ -7,6 +7,10 @@ import com.plazoleta.infraestructure.out.jpa.entity.RestaurantEntity;
 import com.plazoleta.infraestructure.out.jpa.mapper.RestEntityMapper;
 import com.plazoleta.infraestructure.out.jpa.repository.IRestaurantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -27,13 +31,25 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
     }
 
     @Override
-    public List<Restaurant> getAllRestaurants() {
-        List<RestaurantEntity> restaurantEntityList = restaurantRepository.findAll();
-        if (restaurantEntityList.isEmpty()) {
+    public List<Restaurant> getAllRestaurants(int page, int size) {
+        // Crear el PageRequest con ordenación alfabética
+        Pageable pageRequest = PageRequest.of(page , size, Sort.by(Sort.Direction.ASC, "name"));
+
+        // Recuperar las entidades paginadas
+        Page<RestaurantEntity> restaurantEntitiesPage = restaurantRepository.findAll(pageRequest);
+        // Validar si hay datos disponibles para esa página
+        if (restaurantEntitiesPage.isEmpty()) {
             throw new NoDataFoundException();
         }
-        return restEntityMapper.toRestaurantList(restaurantEntityList);
+
+        // Obtener la lista de contenido
+        List<RestaurantEntity> restaurants = restaurantEntitiesPage.getContent();
+
+        // Convertir las entidades a modelo de dominio y devolver
+        return restEntityMapper.toRestaurantList(restaurants);
     }
+
+
 
     @Override
     public void deleteRestaurant(Long id) {

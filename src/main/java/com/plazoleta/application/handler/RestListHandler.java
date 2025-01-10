@@ -37,8 +37,8 @@ public class RestListHandler implements IRestListHandler {
     }
 
     @Override
-    public List<RestListResponse> getAllRestFromList() {
-        return restListResponseMapper.toResposeList(restaurantServicePort.getAllRestaurants());
+    public List<RestListResponse> getAllRestFromList(int page,int size) {
+        return restListResponseMapper.toResposeList(restaurantServicePort.getAllRestaurants(page, size));
     }
 
     @Override

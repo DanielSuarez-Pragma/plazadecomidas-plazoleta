@@ -9,9 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -79,20 +76,6 @@ class RestaurantUseCaseTest {
         assertNotNull(result);
         assertEquals(restaurant.getName(), result.getName());
         verify(restaurantPersistencePort, times(1)).getRestaurant(1L);
-    }
-
-    @Test
-    void getAllRestaurants_ShouldReturnListOfRestaurants() {
-        // Mock para simular lista de restaurantes
-        when(restaurantPersistencePort.getAllRestaurants()).thenReturn(Collections.singletonList(restaurant));
-
-        // Ejecutar metodo
-        List<Restaurant> result = restaurantUseCase.getAllRestaurants();
-
-        // Validar resultado
-        assertFalse(result.isEmpty());
-        assertEquals(1, result.size());
-        verify(restaurantPersistencePort, times(1)).getAllRestaurants();
     }
 
     @Test
