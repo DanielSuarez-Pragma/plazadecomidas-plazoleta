@@ -27,7 +27,7 @@ public class RestaurantRestController {
     }
 
     @GetMapping("/getRests")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('CLIENT')")
     public ResponseEntity<List<RestListResponse>> getRestsFromList() {
         return ResponseEntity.ok(restListHandler.getAllRestFromList());
     }

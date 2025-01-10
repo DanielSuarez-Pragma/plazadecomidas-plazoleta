@@ -22,10 +22,7 @@ public interface RestListResponseMapper {
     private RestListResponse getRestListResponse(Restaurant restaurant) {
         RestListResponse response = new RestListResponse();
         response.setName(restaurant.getName());
-        response.setAddress(restaurant.getAddress());
-        response.setPhone(restaurant.getPhone());
         response.setLogoUrl(restaurant.getLogoUrl());
-        response.setNit(restaurant.getNit());
         return response;
     }
 

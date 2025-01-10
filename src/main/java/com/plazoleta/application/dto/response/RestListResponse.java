@@ -7,8 +7,5 @@ import lombok.Setter;
 @Setter
 public class RestListResponse {
     private String name;
-    private String address;
-    private String phone;
     private String logoUrl;
-    private String nit;
 }
