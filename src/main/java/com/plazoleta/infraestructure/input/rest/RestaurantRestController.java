@@ -26,7 +26,7 @@ public class RestaurantRestController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/getRests/page/{page}/size/{size}")
+    @GetMapping("/getRests/size/{size}/page/{page}")
     @PreAuthorize("hasAuthority('CLIENT')")
     public ResponseEntity<List<RestListResponse>> getRestsFromList(@PathVariable int page, @PathVariable int size) {
         return ResponseEntity.ok(restListHandler.getAllRestFromList(page, size));

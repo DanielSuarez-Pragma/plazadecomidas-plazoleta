@@ -10,7 +10,7 @@ public interface IPlateServicePort {
 
     Plate getPlateById(Long id);
 
-    List<Plate> getAllPlates();
+    List<Plate> getAllPlates(Long id, int page, int size);
 
     void updatePlate(Plate plate);
 

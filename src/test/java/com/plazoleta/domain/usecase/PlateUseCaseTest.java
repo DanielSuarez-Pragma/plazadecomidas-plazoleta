@@ -110,7 +110,7 @@ class PlateUseCaseTest {
     void getAllPlates() {
         when(platePersistencePort.getAllPlates()).thenReturn(Collections.singletonList(plate));
 
-        assertEquals(1, plateUseCase.getAllPlates().size());
+        assertEquals(1, plateUseCase.getAllPlates(0L,0,0).size());
         verify(platePersistencePort, times(1)).getAllPlates();
     }
 

@@ -42,13 +42,13 @@ public class PlateListHandler implements IPlateListHandler {
     }
 
     @Override
-    public List<PlateListResponse> getAllPlatesFromList() {
-        return plateListResponseMapper.toResponseList(plateServicePort.getAllPlates());
+    public List<PlateListResponse> getAllPlatesFromList(Long id, int page, int size) {
+        return plateListResponseMapper.toResponseList(plateServicePort.getAllPlates(id, page, size));
     }
 
     @Override
     public PlateListResponse getPlateFromList(Long id) {
-            List<Plate> plates = plateServicePort.getAllPlates();
+            List<Plate> plates = plateServicePort.getAllPlates(0L,0,0);
 
             return (PlateListResponse) plates.stream().map(plate -> {
                 String categoryName = categoryServicePort.getCategoryById(plate.getCategoryId()).getName();

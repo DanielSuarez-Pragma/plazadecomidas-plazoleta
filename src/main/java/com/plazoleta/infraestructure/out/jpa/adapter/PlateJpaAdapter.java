@@ -7,6 +7,8 @@ import com.plazoleta.infraestructure.out.jpa.entity.PlateEntity;
 import com.plazoleta.infraestructure.out.jpa.mapper.PlateEntityMapper;
 import com.plazoleta.infraestructure.out.jpa.repository.IPlateRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -51,4 +53,20 @@ public class PlateJpaAdapter implements IPlatePersistencePort {
     public void deletePlateById(Long id) {
         plateRepository.deleteById(id);
     }
+
+    @Override
+    public List<Plate> getPlatesByRestaurantId(Long restaurantId, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<PlateEntity> plateEntities = plateRepository.findByRestaurantId(restaurantId, pageRequest);
+
+        if (plateEntities.isEmpty()) {
+            throw new NoDataFoundException();
+        }
+
+        return plateEntities.getContent()
+                .stream()
+                .map(plateEntityMapper::toPlate)
+                .toList();
+    }
+
 }

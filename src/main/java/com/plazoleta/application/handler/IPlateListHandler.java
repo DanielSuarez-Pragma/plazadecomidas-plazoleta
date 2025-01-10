@@ -11,7 +11,7 @@ public interface IPlateListHandler {
 
     void savePlateInList(PlateListRequest plateListRequest);
 
-    List<PlateListResponse> getAllPlatesFromList();
+    List<PlateListResponse> getAllPlatesFromList(Long id, int page, int size);
 
     PlateListResponse getPlateFromList(Long id);
 

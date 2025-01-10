@@ -60,9 +60,11 @@ public class PlateUseCase implements IPlateServicePort {
 
 
     @Override
-    public List<Plate> getAllPlates() {
-        return platePersistencePort.getAllPlates();
+    public List<Plate> getAllPlates(Long restaurantId, int page, int size) {
+        // Llama al método del persistencePort pasando el id del restaurante, la página y el tamaño
+        return platePersistencePort.getPlatesByRestaurantId(restaurantId, page, size);
     }
+
 
     @Override
     public void updatePlate(Plate plate) {

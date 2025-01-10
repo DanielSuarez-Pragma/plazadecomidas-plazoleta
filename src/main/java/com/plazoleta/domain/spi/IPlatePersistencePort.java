@@ -22,4 +22,6 @@ public interface IPlatePersistencePort {
 
     // Eliminar un plato por ID
     void deletePlateById(Long id);
+
+    List<Plate> getPlatesByRestaurantId(Long restaurantId, int page, int size);
 }

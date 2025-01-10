@@ -28,10 +28,10 @@ public class PlateRestController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/getPlates")
-    @PreAuthorize("hasAuthority('OWNER')")
-    public ResponseEntity<List<PlateListResponse>> getAllPlatesFromList() {
-        return ResponseEntity.ok(plateListHandler.getAllPlatesFromList());
+    @GetMapping("/getPlates/restaurant/{id}/size/{size}/page/{page}")
+    @PreAuthorize("hasAuthority('CLIENT')")
+    public ResponseEntity<List<PlateListResponse>> getAllPlatesFromList(@PathVariable Long id, @PathVariable Integer size, @PathVariable Integer page) {
+       return ResponseEntity.ok(plateListHandler.getAllPlatesFromList(id, page, size));
     }
 
     @GetMapping("/{id}")
