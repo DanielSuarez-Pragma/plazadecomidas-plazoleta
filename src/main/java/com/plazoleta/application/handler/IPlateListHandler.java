@@ -1,6 +1,7 @@
 package com.plazoleta.application.handler;
 
 import com.plazoleta.application.dto.request.PlateListRequest;
+import com.plazoleta.application.dto.request.PlateStateRequest;
 import com.plazoleta.application.dto.response.PlateListResponse;
 import com.plazoleta.application.dto.request.PlateUpdateRequest;
 
@@ -15,6 +16,8 @@ public interface IPlateListHandler {
     PlateListResponse getPlateFromList(Long id);
 
     void updatePlateFromList(PlateUpdateRequest plateUpdateRequest);
+
+    void enableDisablePlate(PlateStateRequest plateStateRequest);
 
     void deletePlateFromList(Long id);
 }

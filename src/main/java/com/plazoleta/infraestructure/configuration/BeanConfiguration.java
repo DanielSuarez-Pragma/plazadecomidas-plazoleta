@@ -36,7 +36,6 @@ public class BeanConfiguration {
     private final CategoryEntityMapper categoryEntityMapper;
     private final UserFeingClient userFeingClient;
 
-
     @Bean
     public IUserPersistencePort userPersistencePort() {
         return new UserAdapter(userFeingClient);
@@ -56,7 +55,7 @@ public class BeanConfiguration {
     public IPlatePersistencePort platePersistencePort() {return new PlateJpaAdapter(plateRepository, plateEntityMapper);}
 
     @Bean
-    public IPlateServicePort plateServicePort() {return new PlateUseCase(platePersistencePort(), categoryPersistencePort() , restaurantPersistencePort());}
+    public IPlateServicePort plateServicePort() {return new PlateUseCase(platePersistencePort(), categoryPersistencePort() , restaurantPersistencePort(), userPersistencePort());}
 
     @Bean
     public ICategoryPersistencePort categoryPersistencePort() {return new CategoryJpaAdapter(categoryRepository, categoryEntityMapper);}

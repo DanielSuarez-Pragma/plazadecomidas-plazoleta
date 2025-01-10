@@ -18,6 +18,8 @@ public interface IPlatePersistencePort {
     //Editar los platos
     void updatePlate(Plate plate);
 
+    void enableDisablePlate(Plate plate);
+
     // Eliminar un plato por ID
     void deletePlateById(Long id);
 }

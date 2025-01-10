@@ -1,6 +1,7 @@
 package com.plazoleta.application.handler;
 
 import com.plazoleta.application.dto.request.PlateListRequest;
+import com.plazoleta.application.dto.request.PlateStateRequest;
 import com.plazoleta.application.dto.response.PlateListResponse;
 import com.plazoleta.application.dto.request.PlateUpdateRequest;
 import com.plazoleta.application.mapper.PlateListRequestMapper;
@@ -62,6 +63,13 @@ public class PlateListHandler implements IPlateListHandler {
         newPlate.setDescription(plateUpdateRequest.getDescription());
         newPlate.setPrice(plateUpdateRequest.getPrice());
         plateServicePort.updatePlate(newPlate);
+    }
+
+    @Override
+    public void enableDisablePlate(PlateStateRequest plateStateRequest) {
+        Plate newPlate = plateServicePort.getPlateById(plateStateRequest.getId());
+        newPlate.setActive(plateStateRequest.getActive());
+        plateServicePort.enableDisablePlate(newPlate);
     }
 
     @Override

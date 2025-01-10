@@ -1,12 +1,14 @@
 package com.plazoleta.infraestructure.input.rest;
 
 import com.plazoleta.application.dto.request.PlateListRequest;
+import com.plazoleta.application.dto.request.PlateStateRequest;
 import com.plazoleta.application.dto.response.PlateListResponse;
 import com.plazoleta.application.dto.request.PlateUpdateRequest;
 import com.plazoleta.application.handler.IPlateListHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,33 +16,46 @@ import java.util.List;
 @RestController
 @RequestMapping("/plates")
 @RequiredArgsConstructor
+@PreAuthorize("denyAll()")
 public class PlateRestController {
 
     private final IPlateListHandler plateListHandler;
 
     @PostMapping("/savePlate")
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<Void> savePlate(@RequestBody PlateListRequest plateListRequest) {
         plateListHandler.savePlateInList(plateListRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/getPlates")
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<List<PlateListResponse>> getAllPlatesFromList() {
         return ResponseEntity.ok(plateListHandler.getAllPlatesFromList());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<PlateListResponse> getPlateFromList(@PathVariable Long id) {
         return ResponseEntity.ok(plateListHandler.getPlateFromList(id));
     }
 
     @PutMapping("/")
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<Void> updatePlate(@RequestBody PlateUpdateRequest plateUpdateRequest) {
         plateListHandler.updatePlateFromList(plateUpdateRequest);
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/plateState")
+    @PreAuthorize("hasAuthority('OWNER')")
+    public ResponseEntity<Void> enableDisablePlate(@RequestBody PlateStateRequest plateStateRequest) {
+        plateListHandler.enableDisablePlate(plateStateRequest);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{plateId}")
+    @PreAuthorize("hasAuthority('OWNER')")
     public ResponseEntity<Void> deletePlate(@PathVariable Long plateId) {
         plateListHandler.deletePlateFromList(plateId);
         return ResponseEntity.noContent().build();

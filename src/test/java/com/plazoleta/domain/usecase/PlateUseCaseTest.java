@@ -6,6 +6,7 @@ import com.plazoleta.domain.model.Restaurant;
 import com.plazoleta.domain.spi.ICategoryPersistencePort;
 import com.plazoleta.domain.spi.IPlatePersistencePort;
 import com.plazoleta.domain.spi.IRestaurantPersistencePort;
+import com.plazoleta.domain.spi.IUserPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -31,6 +32,9 @@ class PlateUseCaseTest {
 
     @Mock
     private IRestaurantPersistencePort restaurantPersistencePort;
+
+    @Mock
+    private IUserPersistencePort userPersistencePort;
 
     private Plate plate;
     private Restaurant restaurant;
@@ -69,12 +73,19 @@ class PlateUseCaseTest {
 
         when(restaurantPersistencePort.getRestaurant(1L)).thenReturn(restaurant);
 
+        // Configura el mock para `userPersistencePort`
+        when(userPersistencePort.getAuthenticatedUserId()).thenReturn("propietario1@plaza.com");
+        when(userPersistencePort.getUserByEmail("propietario1@plaza.com")).thenReturn(1L);
+
         // Llama al método
         plateUseCase.savePlate(plate);
 
         // Verifica que el método fue llamado
         verify(platePersistencePort).savePlate(plate);
+        verify(userPersistencePort).getAuthenticatedUserId();
+        verify(userPersistencePort).getUserByEmail("propietario1@plaza.com");
     }
+
 
 
     @Test
@@ -105,33 +116,51 @@ class PlateUseCaseTest {
 
     @Test
     void updatePlate() {
-        // Configuración de datos simulados
-        Plate existingPlate = new Plate(1L, "Pasta", 1L, "Old description", 12.0, 1L, "urlImage", true);
-        Plate updatedPlate = new Plate(1L, "Pasta", 1L, "Updated description", 15.0, 1L, "urlImage", true);
+        // Arrange
+        Plate plate = new Plate(1L, "Pasta", 1L, "Updated description", 15.0, 1L, "urlImage", true);
+        Plate existingPlate = new Plate(1L, "Old Pasta", 1L, "Old description", 10.0, 1L, "oldUrlImage", true);
 
-        // Simular el comportamiento
+        // Configuración de mocks
         when(platePersistencePort.getPlateById(1L)).thenReturn(existingPlate);
         doNothing().when(platePersistencePort).updatePlate(any(Plate.class));
 
-        // Ejecutar el caso de uso
-        plateUseCase.updatePlate(updatedPlate);
+        // Act
+        plateUseCase.updatePlate(plate);
 
-        // Verificar que se llamó primero al getPlateById
-        verify(platePersistencePort, times(1)).getPlateById(1L);
-
-        // Verificar que el updatePlate se llamó con los datos correctos
-        verify(platePersistencePort).updatePlate(
-                argThat(plateUpdate ->
-                        plate.getId().equals(1L) &&
-                                plate.getName().equals("Pasta") &&
-                                plate.getDescription().equals("Updated description") &&
-                                plate.getPrice().equals(15.0) &&
-                                plate.getRestaurantId().equals(1L) &&
-                                plate.getImageUrl().equals("urlImage") &&
-                                plate.getActive().equals(true)
-                )
-        );
+        // Assert
+        verify(platePersistencePort).getPlateById(1L);
+        verify(platePersistencePort).updatePlate(argThat(updatedPlate ->
+                updatedPlate.getId().equals(plate.getId()) &&
+                        updatedPlate.getName().equals(plate.getName()) &&
+                        updatedPlate.getDescription().equals(plate.getDescription()) &&
+                        updatedPlate.getPrice().equals(plate.getPrice())
+        ));
     }
+
+    @Test
+    void enableDisablePlate() {
+        // Arrange
+        Plate plate = new Plate(1L, "Pasta", 1L, "Delicious pasta", 10.0, 1L, "urlImage", true); // Plato original con estado activo
+        Plate updatedPlate = new Plate(1L, "Pasta", 1L, "Delicious pasta", 10.0, 1L, "urlImage", false); // Plato con el nuevo estado desactivado
+
+        // Configuración de mocks
+        when(platePersistencePort.getPlateById(plate.getId())).thenReturn(plate);
+        doNothing().when(platePersistencePort).updatePlate(any(Plate.class));
+
+        // Act
+        plate.setActive(false); // Cambiar el estado activo del plato
+        plateUseCase.enableDisablePlate(plate);
+
+        // Assert
+        verify(platePersistencePort).getPlateById(plate.getId());
+        verify(platePersistencePort).updatePlate(argThat(updated ->
+                updated.getId().equals(plate.getId()) &&
+                        !updated.getActive() // Validamos que el nuevo estado sea false
+        ));
+    }
+
+
+
 
     @Test
     void deletePlateById() {

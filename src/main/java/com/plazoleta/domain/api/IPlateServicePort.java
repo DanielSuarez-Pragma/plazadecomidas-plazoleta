@@ -14,5 +14,7 @@ public interface IPlateServicePort {
 
     void updatePlate(Plate plate);
 
+    void enableDisablePlate(Plate plate);
+
     void deletePlateById(Long id);
 }

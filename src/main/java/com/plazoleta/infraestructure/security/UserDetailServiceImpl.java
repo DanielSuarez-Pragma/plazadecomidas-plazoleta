@@ -62,6 +62,16 @@ public class UserDetailServiceImpl implements UserDetailsService {
             default:
                 throw new IllegalArgumentException("Rol no reconocido para el ID: " + roleId);
         }
+
+        // Almacenar el ID del usuario en el SecurityContext
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        userAuthDto.getId(),
+                        userAuthDto.getPassword(),
+                        authorities
+                )
+        );
+
         return new User(userAuthDto.getEmail(), userAuthDto.getPassword(), authorities);
     }
 
