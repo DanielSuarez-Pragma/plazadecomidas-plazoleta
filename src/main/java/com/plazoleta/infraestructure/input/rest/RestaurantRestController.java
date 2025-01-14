@@ -39,7 +39,7 @@ public class RestaurantRestController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER')")
     public ResponseEntity<Void> deleteRestFromId(@PathVariable Long id) {
         restListHandler.deleteRestFromList(id);
         return ResponseEntity.noContent().build();

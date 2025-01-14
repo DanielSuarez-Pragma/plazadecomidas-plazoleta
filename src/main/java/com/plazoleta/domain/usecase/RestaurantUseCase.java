@@ -19,11 +19,13 @@ public class RestaurantUseCase implements IRestaurantServicePort {
 
     @Override
     public void saveRestaurant(Restaurant restaurant) {
+        long authOwner = userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId());
+        long restOwner = restaurant.getOwnerId();
         userPersistencePort.getUserById(restaurant.getOwnerId());
-        if (userPersistencePort.getUserById(restaurant.getOwnerId()) == 1){
+        if (userPersistencePort.getUserById(restaurant.getOwnerId()) == 1 && authOwner == restOwner) {
             restaurantPersistencePort.saveRestaurant(restaurant);
         }else {
-            throw new IllegalArgumentException("No es un owner");
+            throw new IllegalArgumentException("No es un owner para el restaurante");
         }
     }
 

@@ -4,8 +4,8 @@ import com.plazoleta.application.dto.request.PlateListRequest;
 import com.plazoleta.application.dto.request.PlateStateRequest;
 import com.plazoleta.application.dto.response.PlateListResponse;
 import com.plazoleta.application.dto.request.PlateUpdateRequest;
-import com.plazoleta.application.mapper.PlateListRequestMapper;
-import com.plazoleta.application.mapper.PlateListResponseMapper;
+import com.plazoleta.application.mapper.request.PlateListRequestMapper;
+import com.plazoleta.application.mapper.response.PlateListResponseMapper;
 
 import com.plazoleta.domain.api.ICategoryServicePort;
 import com.plazoleta.domain.api.IPlateServicePort;

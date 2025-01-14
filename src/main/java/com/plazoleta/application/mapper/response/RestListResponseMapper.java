@@ -1,4 +1,4 @@
-package com.plazoleta.application.mapper;
+package com.plazoleta.application.mapper.response;
 
 import com.plazoleta.application.dto.response.RestListResponse;
 import com.plazoleta.domain.model.Restaurant;

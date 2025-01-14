@@ -1,26 +1,12 @@
 package com.plazoleta.infraestructure.configuration;
 
-import com.plazoleta.domain.api.ICategoryServicePort;
-import com.plazoleta.domain.api.IPlateServicePort;
-import com.plazoleta.domain.api.IRestaurantServicePort;
-import com.plazoleta.domain.spi.ICategoryPersistencePort;
-import com.plazoleta.domain.spi.IPlatePersistencePort;
-import com.plazoleta.domain.spi.IRestaurantPersistencePort;
-import com.plazoleta.domain.spi.IUserPersistencePort;
-import com.plazoleta.domain.usecase.CategoryUseCase;
-import com.plazoleta.domain.usecase.PlateUseCase;
-import com.plazoleta.domain.usecase.RestaurantUseCase;
+import com.plazoleta.domain.api.*;
+import com.plazoleta.domain.spi.*;
+import com.plazoleta.domain.usecase.*;
 import com.plazoleta.infraestructure.input.rest.client.UserFeingClient;
-import com.plazoleta.infraestructure.out.jpa.adapter.CategoryJpaAdapter;
-import com.plazoleta.infraestructure.out.jpa.adapter.PlateJpaAdapter;
-import com.plazoleta.infraestructure.out.jpa.adapter.RestaurantJpaAdapter;
-import com.plazoleta.infraestructure.out.jpa.adapter.UserAdapter;
-import com.plazoleta.infraestructure.out.jpa.mapper.CategoryEntityMapper;
-import com.plazoleta.infraestructure.out.jpa.mapper.PlateEntityMapper;
-import com.plazoleta.infraestructure.out.jpa.mapper.RestEntityMapper;
-import com.plazoleta.infraestructure.out.jpa.repository.ICategoryRepository;
-import com.plazoleta.infraestructure.out.jpa.repository.IPlateRepository;
-import com.plazoleta.infraestructure.out.jpa.repository.IRestaurantRepository;
+import com.plazoleta.infraestructure.out.jpa.adapter.*;
+import com.plazoleta.infraestructure.out.jpa.mapper.*;
+import com.plazoleta.infraestructure.out.jpa.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,6 +20,10 @@ public class BeanConfiguration {
     private final PlateEntityMapper plateEntityMapper;
     private final ICategoryRepository categoryRepository;
     private final CategoryEntityMapper categoryEntityMapper;
+    private final IOrderRepository orderRepository;
+    private final OrderEntityMapper orderEntityMapper;
+    private final IOrderPlateRepository orderPlateRepository;
+    private final OrderPlateEntityMapper orderPlateEntityMapper;
     private final UserFeingClient userFeingClient;
 
     @Bean
@@ -62,5 +52,17 @@ public class BeanConfiguration {
 
     @Bean
     public ICategoryServicePort categoryServicePort() {return new CategoryUseCase(categoryPersistencePort());}
+
+    @Bean
+    public IOrderPersistencePort orderPersistencePort() {return new OrderJpaAdapter(orderRepository, orderEntityMapper);}
+
+    @Bean
+    public IOrderServicePort orderServicePort() {return new OrderUseCase(orderPersistencePort(), restaurantPersistencePort(), userPersistencePort(), platePersistencePort(), orderPlatePersistencePort());}
+
+    @Bean
+    public IOrderPlatePersistencePort orderPlatePersistencePort(){return new OrderPlateJpaAdapter(orderPlateRepository, orderPlateEntityMapper);}
+
+    @Bean
+    public IOrderPlateServicePort orderPlateServicePort() {return new OrderPlateUseCase(orderPlatePersistencePort());}
 
 }

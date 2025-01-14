@@ -1,4 +1,4 @@
-package com.plazoleta.application.mapper;
+package com.plazoleta.application.mapper.response;
 
 import com.plazoleta.application.dto.response.PlateListResponse;
 import com.plazoleta.domain.model.Plate;
