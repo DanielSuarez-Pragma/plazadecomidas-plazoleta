@@ -1,6 +1,6 @@
 # Configuración del servidor
 server:
-  port: 8085
+  port: 8091
 
 # Configuración de la base de datos
 spring:

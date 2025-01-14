@@ -24,6 +24,8 @@ public class BeanConfiguration {
     private final OrderEntityMapper orderEntityMapper;
     private final IOrderPlateRepository orderPlateRepository;
     private final OrderPlateEntityMapper orderPlateEntityMapper;
+    private final IRestEmpRepository restEmpRepository;
+    private final RestEmpEntityMapper restEmpEntityMapper;
     private final UserFeingClient userFeingClient;
 
     @Bean
@@ -57,12 +59,18 @@ public class BeanConfiguration {
     public IOrderPersistencePort orderPersistencePort() {return new OrderJpaAdapter(orderRepository, orderEntityMapper);}
 
     @Bean
-    public IOrderServicePort orderServicePort() {return new OrderUseCase(orderPersistencePort(), restaurantPersistencePort(), userPersistencePort(), platePersistencePort(), orderPlatePersistencePort());}
+    public IOrderServicePort orderServicePort() {return new OrderUseCase(orderPersistencePort(), restaurantPersistencePort(), userPersistencePort(), platePersistencePort(), orderPlatePersistencePort(), restEmpPersistencePort());}
 
     @Bean
     public IOrderPlatePersistencePort orderPlatePersistencePort(){return new OrderPlateJpaAdapter(orderPlateRepository, orderPlateEntityMapper);}
 
     @Bean
     public IOrderPlateServicePort orderPlateServicePort() {return new OrderPlateUseCase(orderPlatePersistencePort());}
+
+    @Bean
+    public IRestEmpPersistencePort restEmpPersistencePort(){return new RestEmpJpaAdapter(restEmpRepository, restEmpEntityMapper);}
+
+    @Bean
+    public IRestEmpServicePort restEmpServicePort(){return new RestEmpUseCase(restEmpPersistencePort(), restaurantPersistencePort(), userPersistencePort());}
 
 }

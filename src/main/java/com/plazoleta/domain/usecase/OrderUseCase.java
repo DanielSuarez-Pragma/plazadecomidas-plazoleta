@@ -17,6 +17,7 @@ public class OrderUseCase implements IOrderServicePort {
     private final IUserPersistencePort userPersistencePort;
     private final IPlatePersistencePort platePersistencePort;
     private final IOrderPlatePersistencePort orderPlatePersistencePort;
+    private final IRestEmpPersistencePort restEmpPersistencePort;
 
     @Override
     public void saveOrder(Order order, List<OrderPlate> orderPlateList) {
@@ -55,5 +56,17 @@ public class OrderUseCase implements IOrderServicePort {
     @Override
     public Order getOrderByclientId(Long clientId, String status) {
         return orderPersistencePort.getOrderByClientId(clientId, status);
+    }
+
+    @Override
+    public List<Order> getAllPlates(Long restaurantId, String status, Integer size, Integer page) {
+        if(restaurantPersistencePort.getRestaurant(restaurantId) == null) {
+            throw new IllegalArgumentException("Restaurant not found");
+        }
+        if (restEmpPersistencePort.findByRestaurantIdAndEmployeeId(restaurantId, userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId())) == null) {
+            throw new IllegalArgumentException("You dont have permission to access this resource");
+        }
+
+        return orderPersistencePort.findByRestaurantIdAndStatus(restaurantId, status, size, page);
     }
 }

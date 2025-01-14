@@ -8,4 +8,6 @@ import java.util.List;
 public interface IOrderServicePort {
     void saveOrder(Order order, List<OrderPlate> orderPlateList);
     Order getOrderByclientId(Long clientId, String status);
+
+    List<Order> getAllPlates(Long restaurantId, String status, Integer size, Integer page);
 }
