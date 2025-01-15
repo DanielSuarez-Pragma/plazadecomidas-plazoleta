@@ -9,5 +9,7 @@ public interface IOrderListHandler {
     void saveOrderInList(OrderRequest orderRequest);
 
     List<OrderResponse> getAllPlatesFromList(Long restaurantId, String status, Integer size, Integer page);
+
+    void takeOrder(Long id);
 }
 

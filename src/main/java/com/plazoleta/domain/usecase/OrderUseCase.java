@@ -1,6 +1,7 @@
 package com.plazoleta.domain.usecase;
 
 import com.plazoleta.domain.api.IOrderServicePort;
+import com.plazoleta.domain.constants.OrderStatusConstants;
 import com.plazoleta.domain.model.Order;
 import com.plazoleta.domain.model.OrderPlate;
 import com.plazoleta.domain.spi.*;
@@ -25,9 +26,9 @@ public class OrderUseCase implements IOrderServicePort {
         if(restaurantPersistencePort.getRestaurant(order.getRestaurantId()) == null) {
             throw new IllegalArgumentException("Restaurant not found");
         }
-        if (getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), "Pendiente") != null  ||
-                getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), "Preparacion") != null ||
-                getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), "Listo") != null){
+        if (getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), OrderStatusConstants.PENDING) != null  ||
+                getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), OrderStatusConstants.IN_PREPARATION) != null ||
+                getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), OrderStatusConstants.READY) != null){
                 throw new IllegalArgumentException("Order already exists");
             }
 
@@ -44,7 +45,7 @@ public class OrderUseCase implements IOrderServicePort {
 
         orderPersistencePort.saveOrder(order);
 
-        Order orderSaved = getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()),"Pendiente");
+        Order orderSaved = getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()),OrderStatusConstants.PENDING);
 
         orderPlateList.forEach(orderPlate -> {
             orderPlate.setOrderId(orderSaved.getId());
@@ -68,5 +69,22 @@ public class OrderUseCase implements IOrderServicePort {
         }
 
         return orderPersistencePort.findByRestaurantIdAndStatus(restaurantId, status, size, page);
+    }
+
+    @Override
+    public void takeOrder(Long id) {
+        Order order = orderPersistencePort.findById(id);
+        if (restEmpPersistencePort.findByRestaurantIdAndEmployeeId(order.getRestaurantId(), userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId())) == null) {
+            throw new IllegalArgumentException("You dont have permission to access this resource");
+        }
+        if(!order.getStatus().equals(OrderStatusConstants.PENDING)){
+            throw new IllegalArgumentException("Order is not Pendiente");
+        }
+        if(order.getChefId() != null){
+            throw new IllegalArgumentException("The order has chef");
+        }
+        order.setStatus(OrderStatusConstants.IN_PREPARATION);
+        order.setChefId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()));
+        orderPersistencePort.takeOrder(order);
     }
 }

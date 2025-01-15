@@ -9,4 +9,8 @@ public interface IOrderPersistencePort {
     Order getOrderByClientId(Long id, String status);
 
     List<Order> findByRestaurantIdAndStatus(Long restaurantId, String status, Integer size, Integer page);
+
+    Order findById(Long id);
+
+    void takeOrder(Order order);
 }

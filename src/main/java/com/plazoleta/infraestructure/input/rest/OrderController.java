@@ -32,4 +32,11 @@ public class OrderController {
         return ResponseEntity.ok(orderListHandler.getAllPlatesFromList(restaurantId,status,size,page));
     }
 
+    @PutMapping("/takeOrder/{id}")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public ResponseEntity<Void> takeOrder(@PathVariable Long id){
+        orderListHandler.takeOrder(id);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
 }

@@ -36,10 +36,19 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
         if (orderEntities.isEmpty()){
             throw new NoDataFoundException();
         }
-
         return orderEntities.getContent()
                 .stream()
                 .map(orderEntityMapper::toOrder)
                 .toList();
+    }
+
+    @Override
+    public Order findById(Long id) {
+        return orderEntityMapper.toOrder(orderRepository.findById(id).orElseThrow(NoDataFoundException::new));
+    }
+
+    @Override
+    public void takeOrder(Order order) {
+        orderRepository.save(orderEntityMapper.toEntity(order));
     }
 }

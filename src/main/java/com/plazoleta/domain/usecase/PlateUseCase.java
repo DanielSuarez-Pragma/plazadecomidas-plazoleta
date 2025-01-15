@@ -1,6 +1,7 @@
 package com.plazoleta.domain.usecase;
 
 import com.plazoleta.domain.api.IPlateServicePort;
+import com.plazoleta.domain.exception.RestaurantDoesnBelongException;
 import com.plazoleta.domain.model.Plate;
 import com.plazoleta.domain.spi.ICategoryPersistencePort;
 import com.plazoleta.domain.spi.IPlatePersistencePort;
@@ -43,7 +44,7 @@ public class PlateUseCase implements IPlateServicePort {
         long authOwner= userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId());
         long restOwner= restaurantPersistencePort.getRestaurant(plate.getRestaurantId()).getOwnerId();
         if (authOwner != restOwner) {
-            throw new IllegalArgumentException("This restaurant does not belong to the specified user.");
+            throw new IllegalArgumentException(new RestaurantDoesnBelongException());
         }
 
         // Establecer activo como true por defecto
@@ -68,6 +69,23 @@ public class PlateUseCase implements IPlateServicePort {
 
     @Override
     public void updatePlate(Plate plate) {
+
+        long authOwner= userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId());
+        long restOwner= restaurantPersistencePort.getRestaurant(plate.getRestaurantId()).getOwnerId();
+        if (authOwner != restOwner) {
+            throw new IllegalArgumentException(new RestaurantDoesnBelongException());
+        }
+
+        // Validar precio
+        if (plate.getPrice() <= 0) {
+            throw new IllegalArgumentException("The price must be a positive value.");
+        }
+
+        // Validar que el restaurante exista
+        if (restaurantPersistencePort.getRestaurant(plate.getRestaurantId()) == null) {
+            throw new IllegalArgumentException("The specified restaurant does not exist.");
+        }
+
         // Obtener el plato una vez
         Plate existingPlate = platePersistencePort.getPlateById(plate.getId());
 

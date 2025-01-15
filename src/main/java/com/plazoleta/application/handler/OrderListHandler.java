@@ -29,4 +29,10 @@ public class OrderListHandler implements IOrderListHandler{
     public List<OrderResponse> getAllPlatesFromList(Long restaurantId, String status, Integer size, Integer page) {
         return orderListRequestMapper.toResponseList(orderServicePort.getAllPlates(restaurantId, status, size, page));
     }
+
+    @Override
+    public void takeOrder(Long id) {
+
+        orderServicePort.takeOrder(id);
+    }
 }

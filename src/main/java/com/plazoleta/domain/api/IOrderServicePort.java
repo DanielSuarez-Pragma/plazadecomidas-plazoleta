@@ -10,4 +10,6 @@ public interface IOrderServicePort {
     Order getOrderByclientId(Long clientId, String status);
 
     List<Order> getAllPlates(Long restaurantId, String status, Integer size, Integer page);
+
+    void takeOrder(Long id);
 }
