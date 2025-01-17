@@ -26,4 +26,14 @@ public class OrderPinJpaAdapter implements IOrderPinPersistencePort {
     public void saveOrderPin(OrderPin orderPin) {
         orderPinRepository.save(orderPinEntityMapper.toOrderPinEntity(orderPin));
     }
+
+    @Override
+    public void deleteOrderPin(OrderPin orderPin) {
+        orderPinRepository.delete(orderPinEntityMapper.toOrderPinEntity(orderPin));
+    }
+
+    @Override
+    public OrderPin getOrderPinByOrderIdAndPin(Long id, String pin) {
+        return orderPinEntityMapper.toOrderPin(orderPinRepository.findByOrderIdAndPin(id,pin));
+    }
 }

@@ -46,4 +46,11 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
+    @PutMapping("/deliver/order/{orderID}/pin/{pin}")
+    @PreAuthorize("hasAuthority('EMPLEADO')")
+    public ResponseEntity<Void> deliverOrder(@PathVariable Long orderID, @PathVariable String pin){
+        orderListHandler.deliverOrder(orderID, pin);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
 }

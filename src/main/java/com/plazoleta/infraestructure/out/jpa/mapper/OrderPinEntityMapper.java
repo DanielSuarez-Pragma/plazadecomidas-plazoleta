@@ -32,4 +32,13 @@ public interface OrderPinEntityMapper {
         orderPinEntity.setPin(orderPin.getPin());
         return orderPinEntity;
     }
+
+    default OrderPin toOrderPin(OrderPinEntity byOrderIdAndPin){
+        if(byOrderIdAndPin == null) return null;
+        OrderPin orderPin = new OrderPin();
+        orderPin.setId(byOrderIdAndPin.getId());
+        orderPin.setOrderId(byOrderIdAndPin.getOrderId());
+        orderPin.setPin(byOrderIdAndPin.getPin());
+        return orderPin;
+    }
 }

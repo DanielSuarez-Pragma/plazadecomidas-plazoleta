@@ -40,4 +40,9 @@ public class OrderListHandler implements IOrderListHandler{
     public void notifyOrder(Long id) {
         orderServicePort.notifyOrder(id);
     }
+
+    @Override
+    public void deliverOrder(Long orderID, String pin) {
+        orderServicePort.deliverOrder(orderID, pin);
+    }
 }

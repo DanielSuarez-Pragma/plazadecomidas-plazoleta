@@ -119,6 +119,23 @@ public class OrderUseCase implements IOrderServicePort {
         twilioFeignClientPort.sendMessage(messageModel);
     }
 
+    @Override
+    public void deliverOrder(Long orderID, String pin) {
+        Order order = orderPersistencePort.findById(orderID);
+        if (!Objects.equals(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), order.getChefId())) {
+            throw new IllegalArgumentException("You dont have permission to access this resource");
+        }
+        if(!order.getStatus().equals(READY)){
+            throw new IllegalArgumentException("Order is not in ready state");
+        }
+        if(orderPinPersistencePort.getOrderPinByOrderIdAndPin(order.getId(), pin) == null){
+            throw new IllegalArgumentException("The pin dont exist");
+        }
+        orderPinPersistencePort.deleteOrderPin(orderPinPersistencePort.getOrderPinByOrderIdAndPin(order.getId(), pin) );
+        order.setStatus(DELIVERED);
+        orderPersistencePort.saveOrder(order);
+    }
+
     private String generatePin(){
         Random random = new Random();
         List<OrderPin> orderPinList = orderPinPersistencePort.getAllOrderPin();

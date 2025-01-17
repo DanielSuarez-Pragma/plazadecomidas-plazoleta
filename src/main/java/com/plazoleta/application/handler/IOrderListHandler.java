@@ -13,5 +13,7 @@ public interface IOrderListHandler {
     void takeOrder(Long id);
 
     void notifyOrder(Long id);
+
+    void deliverOrder(Long orderID, String pin);
 }
 
