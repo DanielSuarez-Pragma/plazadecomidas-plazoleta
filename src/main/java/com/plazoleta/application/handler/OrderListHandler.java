@@ -35,4 +35,9 @@ public class OrderListHandler implements IOrderListHandler{
 
         orderServicePort.takeOrder(id);
     }
+
+    @Override
+    public void notifyOrder(Long id) {
+        orderServicePort.notifyOrder(id);
+    }
 }

@@ -17,14 +17,14 @@ public class RestEmpRestController {
     private final IRestEmpHandler restEmpHandler;
 
     @PostMapping("/")
-    @PreAuthorize("hasAuthority('OWNER')")
+    @PreAuthorize("hasAuthority('PROPIETARIO')")
     public ResponseEntity<Void> saveRestEmp(@RequestBody RestEmpRequest restEmpRequest) {
         restEmpHandler.saveRestEmp(restEmpRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/")
-    @PreAuthorize("hasAuthority('OWNER')")
+    @PreAuthorize("hasAuthority('PROPIETARIO')")
     public ResponseEntity<Void> deleteRestEmp(@RequestBody RestEmpRequest restEmpRequest){
         restEmpHandler.deleteRestEmp(restEmpRequest);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

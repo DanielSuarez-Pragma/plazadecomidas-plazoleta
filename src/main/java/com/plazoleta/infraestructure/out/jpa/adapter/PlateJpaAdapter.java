@@ -2,7 +2,6 @@ package com.plazoleta.infraestructure.out.jpa.adapter;
 
 import com.plazoleta.domain.model.Plate;
 import com.plazoleta.domain.spi.IPlatePersistencePort;
-import com.plazoleta.infraestructure.exception.NoDataFoundException;
 import com.plazoleta.infraestructure.out.jpa.entity.PlateEntity;
 import com.plazoleta.infraestructure.out.jpa.mapper.PlateEntityMapper;
 import com.plazoleta.infraestructure.out.jpa.repository.IPlateRepository;
@@ -25,15 +24,12 @@ public class PlateJpaAdapter implements IPlatePersistencePort {
 
     @Override
     public Plate getPlateById(Long id) {
-        return plateEntityMapper.toPlate(plateRepository.findById(id).orElseThrow(NoDataFoundException::new));
+        return plateEntityMapper.toPlate(plateRepository.findById(id).get());
     }
 
     @Override
     public List<Plate> getAllPlates() {
         List<PlateEntity> plateEntityList = plateRepository.findAll();
-        if (plateEntityList.isEmpty()) {
-            throw new NoDataFoundException();
-        }
         return plateEntityMapper.toPlateList(plateEntityList);
     }
 
@@ -58,10 +54,6 @@ public class PlateJpaAdapter implements IPlatePersistencePort {
     public List<Plate> getPlatesByRestaurantId(Long restaurantId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<PlateEntity> plateEntities = plateRepository.findByRestaurantId(restaurantId, pageRequest);
-
-        if (plateEntities.isEmpty()) {
-            throw new NoDataFoundException();
-        }
 
         return plateEntities.getContent()
                 .stream()

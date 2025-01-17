@@ -24,3 +24,8 @@ feign:
 # Configuración del microservicio de usuarios
 users-service:
   url: http://localhost:8090
+
+send-service:
+  url: http://localhost:8092
+
+privateKeyL: ${privateKey}

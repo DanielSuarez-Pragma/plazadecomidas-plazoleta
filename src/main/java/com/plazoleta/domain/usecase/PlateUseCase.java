@@ -1,6 +1,7 @@
 package com.plazoleta.domain.usecase;
 
 import com.plazoleta.domain.api.IPlateServicePort;
+import com.plazoleta.domain.exception.NoDataFoundException;
 import com.plazoleta.domain.exception.RestaurantDoesnBelongException;
 import com.plazoleta.domain.model.Plate;
 import com.plazoleta.domain.spi.ICategoryPersistencePort;
@@ -56,13 +57,17 @@ public class PlateUseCase implements IPlateServicePort {
 
     @Override
     public Plate getPlateById(Long id) {
+
         return platePersistencePort.getPlateById(id);
     }
 
 
     @Override
     public List<Plate> getAllPlates(Long restaurantId, int page, int size) {
-        // Llama al método del persistencePort pasando el id del restaurante, la página y el tamaño
+        List<Plate> plateList = platePersistencePort.getPlatesByRestaurantId(restaurantId, page, size);
+        if(plateList.isEmpty()) {
+            throw new NoDataFoundException("No data found.");
+        }
         return platePersistencePort.getPlatesByRestaurantId(restaurantId, page, size);
     }
 

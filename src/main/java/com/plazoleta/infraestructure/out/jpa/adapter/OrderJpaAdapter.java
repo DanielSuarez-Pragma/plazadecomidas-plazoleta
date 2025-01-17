@@ -1,8 +1,8 @@
 package com.plazoleta.infraestructure.out.jpa.adapter;
 
+import com.plazoleta.domain.exception.NoDataFoundException;
 import com.plazoleta.domain.model.Order;
 import com.plazoleta.domain.spi.IOrderPersistencePort;
-import com.plazoleta.infraestructure.exception.NoDataFoundException;
 import com.plazoleta.infraestructure.out.jpa.entity.OrderEntity;
 import com.plazoleta.infraestructure.out.jpa.mapper.OrderEntityMapper;
 import com.plazoleta.infraestructure.out.jpa.repository.IOrderRepository;
@@ -34,7 +34,7 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
         Page<OrderEntity> orderEntities = orderRepository.findByRestaurantIdAndStatus(restaurantId, status, pageRequest);
 
         if (orderEntities.isEmpty()){
-            throw new NoDataFoundException();
+            throw new NoDataFoundException("Error");
         }
         return orderEntities.getContent()
                 .stream()
@@ -44,11 +44,7 @@ public class OrderJpaAdapter implements IOrderPersistencePort {
 
     @Override
     public Order findById(Long id) {
-        return orderEntityMapper.toOrder(orderRepository.findById(id).orElseThrow(NoDataFoundException::new));
+        return orderEntityMapper.toOrder(orderRepository.findById(id).get());
     }
 
-    @Override
-    public void takeOrder(Order order) {
-        orderRepository.save(orderEntityMapper.toEntity(order));
-    }
 }

@@ -12,4 +12,6 @@ public interface IOrderServicePort {
     List<Order> getAllPlates(Long restaurantId, String status, Integer size, Integer page);
 
     void takeOrder(Long id);
+
+    void notifyOrder(Long id);
 }

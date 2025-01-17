@@ -1,14 +1,19 @@
 package com.plazoleta.domain.usecase;
 
 import com.plazoleta.domain.api.IOrderServicePort;
-import com.plazoleta.domain.constants.OrderStatusConstants;
+import com.plazoleta.domain.model.MessageModel;
 import com.plazoleta.domain.model.Order;
+import com.plazoleta.domain.model.OrderPin;
 import com.plazoleta.domain.model.OrderPlate;
 import com.plazoleta.domain.spi.*;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static com.plazoleta.domain.constants.OrderStatusConstants.*;
 
 @AllArgsConstructor
 public class OrderUseCase implements IOrderServicePort {
@@ -19,6 +24,8 @@ public class OrderUseCase implements IOrderServicePort {
     private final IPlatePersistencePort platePersistencePort;
     private final IOrderPlatePersistencePort orderPlatePersistencePort;
     private final IRestEmpPersistencePort restEmpPersistencePort;
+    private final IOrderPinPersistencePort orderPinPersistencePort;
+    private  final ITwilioFeignClientPort twilioFeignClientPort;
 
     @Override
     public void saveOrder(Order order, List<OrderPlate> orderPlateList) {
@@ -26,9 +33,9 @@ public class OrderUseCase implements IOrderServicePort {
         if(restaurantPersistencePort.getRestaurant(order.getRestaurantId()) == null) {
             throw new IllegalArgumentException("Restaurant not found");
         }
-        if (getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), OrderStatusConstants.PENDING) != null  ||
-                getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), OrderStatusConstants.IN_PREPARATION) != null ||
-                getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), OrderStatusConstants.READY) != null){
+        if (getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), PENDING) != null  ||
+                getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), IN_PREPARATION) != null ||
+                getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), READY) != null){
                 throw new IllegalArgumentException("Order already exists");
             }
 
@@ -45,7 +52,7 @@ public class OrderUseCase implements IOrderServicePort {
 
         orderPersistencePort.saveOrder(order);
 
-        Order orderSaved = getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()),OrderStatusConstants.PENDING);
+        Order orderSaved = getOrderByclientId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), PENDING);
 
         orderPlateList.forEach(orderPlate -> {
             orderPlate.setOrderId(orderSaved.getId());
@@ -77,14 +84,52 @@ public class OrderUseCase implements IOrderServicePort {
         if (restEmpPersistencePort.findByRestaurantIdAndEmployeeId(order.getRestaurantId(), userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId())) == null) {
             throw new IllegalArgumentException("You dont have permission to access this resource");
         }
-        if(!order.getStatus().equals(OrderStatusConstants.PENDING)){
+        if(!order.getStatus().equals(PENDING)){
             throw new IllegalArgumentException("Order is not Pendiente");
         }
         if(order.getChefId() != null){
             throw new IllegalArgumentException("The order has chef");
         }
-        order.setStatus(OrderStatusConstants.IN_PREPARATION);
+        order.setStatus(IN_PREPARATION);
         order.setChefId(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()));
-        orderPersistencePort.takeOrder(order);
+        orderPersistencePort.saveOrder(order);
+    }
+
+    @Override
+    public void notifyOrder(Long id) {
+        Order order = orderPersistencePort.findById(id);
+        if (!Objects.equals(userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId()), order.getChefId())) {
+            throw new IllegalArgumentException("You dont have permission to access this resource");
+        }
+        if(!order.getStatus().equals(IN_PREPARATION)){
+            throw new IllegalArgumentException("Order is not in preparation");
+        }
+        order.setStatus(READY);
+        orderPersistencePort.saveOrder(order);
+        OrderPin orderPin = new OrderPin();
+        orderPin.setOrderId(id);
+        orderPin.setOrderId(order.getId());
+        orderPin.setPin(generatePin());
+        orderPinPersistencePort.saveOrderPin(orderPin);
+        String message = "Buen día, señor(a), su pedido ya está listo para recoger.\nRecuerda mostrar el siguiente pin " + orderPin.getPin() + " para poder entregar tu pedido.";
+        String phoneNumber = "+573229350406";
+
+        MessageModel messageModel = new MessageModel(phoneNumber, message);
+
+        twilioFeignClientPort.sendMessage(messageModel);
+    }
+
+    private String generatePin(){
+        Random random = new Random();
+        List<OrderPin> orderPinList = orderPinPersistencePort.getAllOrderPin();
+        int pin = 1000 + random.nextInt(9000);
+        AtomicReference<String> pinString = new AtomicReference<>(Integer.toString(pin));
+        orderPinList.forEach(orderPin -> {
+            if (orderPin.getPin().equals(pin)) {
+                int newPin = 1000 + random.nextInt(9000);
+                pinString.set(Integer.toString(newPin));
+            }
+        });
+        return pinString.get();
     }
 }

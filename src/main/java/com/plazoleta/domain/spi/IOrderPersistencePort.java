@@ -12,5 +12,4 @@ public interface IOrderPersistencePort {
 
     Order findById(Long id);
 
-    void takeOrder(Order order);
 }

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Component
 public class JwtUtils {
 
-    private String privateKey= "5c169ddbe6c9f8f5e7a4f04fdec406333e9882cd289f6fd06c6b30c1a95e5697";
+    private String privateKey = "5c169ddbe6c9f8f5e7a4f04fdec406333e9882cd289f6fd06c6b30c1a95e5697";
     private String userGenerator = "AUTH0JWT-BACKEND";
 
     public String createToken(Authentication authentication) {

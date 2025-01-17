@@ -1,6 +1,6 @@
 package com.plazoleta.infraestructure.security;
 
-import com.plazoleta.infraestructure.input.rest.client.UserAuthDto;
+import com.plazoleta.infraestructure.input.rest.client.dto.UserAuthDto;
 import com.plazoleta.infraestructure.input.rest.client.UserFeingClient;
 import com.plazoleta.infraestructure.security.dto.AuthLoginRequest;
 import com.plazoleta.infraestructure.security.dto.AuthResponse;
@@ -48,16 +48,16 @@ public class UserDetailServiceImpl implements UserDetailsService {
                 authorities.add(new SimpleGrantedAuthority("ADMIN"));
                 break;
             case 1:
-                authorities.add(new SimpleGrantedAuthority("ROLE_OWNER"));
-                authorities.add(new SimpleGrantedAuthority("OWNER"));
+                authorities.add(new SimpleGrantedAuthority("ROLE_PROPIETARIO"));
+                authorities.add(new SimpleGrantedAuthority("PROPIETARIO"));
                 break;
             case 3:
-                authorities.add(new SimpleGrantedAuthority("ROLE_EMPLOYEE"));
-                authorities.add(new SimpleGrantedAuthority("EMPLOYEE"));
+                authorities.add(new SimpleGrantedAuthority("ROLE_EMPLEADO"));
+                authorities.add(new SimpleGrantedAuthority("EMPLEADO"));
                 break;
             case 4:
-                authorities.add(new SimpleGrantedAuthority("ROLE_CLIENT"));
-                authorities.add(new SimpleGrantedAuthority("CLIENT"));
+                authorities.add(new SimpleGrantedAuthority("ROLE_CLIENTE"));
+                authorities.add(new SimpleGrantedAuthority("CLIENTE"));
                 break;
             default:
                 throw new IllegalArgumentException("Rol no reconocido para el ID: " + roleId);

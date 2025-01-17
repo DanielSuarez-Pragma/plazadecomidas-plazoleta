@@ -11,5 +11,7 @@ public interface IOrderListHandler {
     List<OrderResponse> getAllPlatesFromList(Long restaurantId, String status, Integer size, Integer page);
 
     void takeOrder(Long id);
+
+    void notifyOrder(Long id);
 }
 

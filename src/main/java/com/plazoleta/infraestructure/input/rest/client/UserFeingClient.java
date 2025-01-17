@@ -1,6 +1,8 @@
 package com.plazoleta.infraestructure.input.rest.client;
 
 import com.plazoleta.infraestructure.configuration.FeignClientConfig;
+import com.plazoleta.infraestructure.input.rest.client.dto.UserAuthDto;
+import com.plazoleta.infraestructure.input.rest.client.dto.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

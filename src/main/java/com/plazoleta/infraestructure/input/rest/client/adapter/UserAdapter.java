@@ -1,4 +1,4 @@
-package com.plazoleta.infraestructure.out.jpa.adapter;
+package com.plazoleta.infraestructure.input.rest.client.adapter;
 
 import com.plazoleta.domain.spi.IUserPersistencePort;
 import com.plazoleta.infraestructure.input.rest.client.UserFeingClient;

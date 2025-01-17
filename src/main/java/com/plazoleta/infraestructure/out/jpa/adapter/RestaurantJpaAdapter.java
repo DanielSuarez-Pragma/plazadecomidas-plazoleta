@@ -1,8 +1,8 @@
 package com.plazoleta.infraestructure.out.jpa.adapter;
 
+import com.plazoleta.domain.exception.NoDataFoundException;
 import com.plazoleta.domain.model.Restaurant;
 import com.plazoleta.domain.spi.IRestaurantPersistencePort;
-import com.plazoleta.infraestructure.exception.NoDataFoundException;
 import com.plazoleta.infraestructure.out.jpa.entity.RestaurantEntity;
 import com.plazoleta.infraestructure.out.jpa.mapper.RestEntityMapper;
 import com.plazoleta.infraestructure.out.jpa.repository.IRestaurantRepository;
@@ -27,7 +27,7 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
 
     @Override
     public Restaurant getRestaurant(Long id) {
-        return restEntityMapper.toRestaurant(restaurantRepository.findById(id).orElseThrow(NoDataFoundException::new));
+        return restEntityMapper.toRestaurant(restaurantRepository.findById(id).get());
     }
 
     @Override
@@ -39,7 +39,7 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
         Page<RestaurantEntity> restaurantEntitiesPage = restaurantRepository.findAll(pageRequest);
         // Validar si hay datos disponibles para esa página
         if (restaurantEntitiesPage.isEmpty()) {
-            throw new NoDataFoundException();
+            throw new NoDataFoundException("Error");
         }
 
         // Obtener la lista de contenido

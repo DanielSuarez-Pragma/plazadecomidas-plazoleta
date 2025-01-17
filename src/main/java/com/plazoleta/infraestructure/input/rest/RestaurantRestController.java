@@ -20,14 +20,14 @@ public class RestaurantRestController {
     private final IRestListHandler restListHandler;
 
     @PostMapping("/saveRest")
-    @PreAuthorize("hasAuthority('OWNER')")
+    @PreAuthorize("hasAuthority('PROPIETARIO')")
     public ResponseEntity<Void> saveRest(@RequestBody RestListRequest restListRequest) {
         restListHandler.saveRestInList(restListRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/getRests/size/{size}/page/{page}")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("hasAuthority('CLIENTE')")
     public ResponseEntity<List<RestListResponse>> getRestsFromList(@PathVariable int page, @PathVariable int size) {
         return ResponseEntity.ok(restListHandler.getAllRestFromList(page, size));
     }
@@ -39,7 +39,7 @@ public class RestaurantRestController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','OWNER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','PROPIETARIO')")
     public ResponseEntity<Void> deleteRestFromId(@PathVariable Long id) {
         restListHandler.deleteRestFromList(id);
         return ResponseEntity.noContent().build();

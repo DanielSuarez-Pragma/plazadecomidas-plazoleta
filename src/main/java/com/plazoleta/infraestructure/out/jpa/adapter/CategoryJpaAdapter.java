@@ -1,8 +1,8 @@
 package com.plazoleta.infraestructure.out.jpa.adapter;
 
+import com.plazoleta.domain.exception.NoDataFoundException;
 import com.plazoleta.domain.model.Category;
 import com.plazoleta.domain.spi.ICategoryPersistencePort;
-import com.plazoleta.infraestructure.exception.NoDataFoundException;
 import com.plazoleta.infraestructure.out.jpa.entity.CategoryEntity;
 import com.plazoleta.infraestructure.out.jpa.mapper.CategoryEntityMapper;
 import com.plazoleta.infraestructure.out.jpa.repository.ICategoryRepository;
@@ -24,14 +24,14 @@ public class CategoryJpaAdapter implements ICategoryPersistencePort {
     public List<Category> getAllCategories() {
         List<CategoryEntity> categoryEntities = categoryRepository.findAll();
         if(categoryEntities.isEmpty()) {
-            throw new NoDataFoundException();
+            throw new NoDataFoundException("Error");
         }
         return categoryEntityMapper.toCategoryList(categoryEntities);
     }
 
     @Override
     public Category getCategoryById(Long id) {
-        return categoryEntityMapper.toCategory(categoryRepository.findById(id).orElseThrow(NoDataFoundException::new));
+        return categoryEntityMapper.toCategory(categoryRepository.findById(id).get());
     }
 
     @Override

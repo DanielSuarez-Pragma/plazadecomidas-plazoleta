@@ -20,22 +20,29 @@ public class OrderController {
     private final IOrderListHandler orderListHandler;
 
     @PostMapping("/")
-    @PreAuthorize("hasAuthority('CLIENT')")
+    @PreAuthorize("hasAuthority('CLIENTE')")
     public ResponseEntity<Void> saveOrder(@RequestBody OrderRequest orderRequest) {
         orderListHandler.saveOrderInList(orderRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/getOrders/restaurant/{restaurantId}/status/{status}/size/{size}/page/{page}")
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    @PreAuthorize("hasAuthority('EMPLEADO')")
     public ResponseEntity<List<OrderResponse>> getAllPlaterFromList(@PathVariable Long restaurantId, @PathVariable String status, @PathVariable Integer size, @PathVariable Integer page){
         return ResponseEntity.ok(orderListHandler.getAllPlatesFromList(restaurantId,status,size,page));
     }
 
     @PutMapping("/takeOrder/{id}")
-    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    @PreAuthorize("hasAuthority('EMPLEADO')")
     public ResponseEntity<Void> takeOrder(@PathVariable Long id){
         orderListHandler.takeOrder(id);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
+
+    @PutMapping("/notify/{id}")
+    @PreAuthorize("hasAuthority('EMPLEADO')")
+    public ResponseEntity<Void> notifyOrder(@PathVariable Long id){
+        orderListHandler.notifyOrder(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
