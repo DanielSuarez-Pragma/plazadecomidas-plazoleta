@@ -2,14 +2,17 @@ package com.plazoleta.application.mapper.request;
 
 import com.plazoleta.application.dto.request.OrderPlateRequest;
 import com.plazoleta.application.dto.request.OrderRequest;
+import com.plazoleta.application.dto.request.TraceClientResponse;
+import com.plazoleta.application.dto.response.CancelResponse;
 import com.plazoleta.application.dto.response.OrderResponse;
+import com.plazoleta.domain.model.CancelMessage;
 import com.plazoleta.domain.model.Order;
 import com.plazoleta.domain.model.OrderPlate;
+import com.plazoleta.domain.model.TraceClient;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -17,8 +20,8 @@ public interface OrderListRequestMapper {
 
     default Order toOrder(OrderRequest orderRequest) {
         Order order = new Order();
-        order.setDate(new Date());
-        order.setStatus("Pendiente");
+        order.setDate(null);
+        order.setStatus(null);
         if (orderRequest.getRestaurantId() != null) {
             order.setRestaurantId(orderRequest.getRestaurantId());
         }
@@ -54,5 +57,25 @@ public interface OrderListRequestMapper {
 
     default List<OrderResponse> toResponseList(List<Order> orderPlateList) {
         return orderPlateList.stream().map(this::toResponse).toList();
+    }
+
+    default CancelResponse toCancelResponse(CancelMessage cancelMessage) {
+        CancelResponse cancelResponse = new CancelResponse();
+        cancelResponse.setMessage(cancelMessage.getMessage());
+        return cancelResponse;
+    }
+
+    default List<TraceClientResponse> toResponseTrace(List<TraceClient> traceClient){
+        return traceClient.stream().map(trace ->{
+            TraceClientResponse traceClientResponse = new TraceClientResponse();
+            traceClientResponse.setOrderId( trace.getOrderId() );
+            traceClientResponse.setClientEmail( trace.getClientEmail() );
+            traceClientResponse.setDate( trace.getDate() );
+            traceClientResponse.setLastState( trace.getLastState() );
+            traceClientResponse.setNewState( trace.getNewState() );
+            traceClientResponse.setEmployeeEmail( trace.getEmployeeEmail() );
+            return traceClientResponse;
+
+        }).toList();
     }
 }

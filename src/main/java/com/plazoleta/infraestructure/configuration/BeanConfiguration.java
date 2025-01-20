@@ -3,10 +3,13 @@ package com.plazoleta.infraestructure.configuration;
 import com.plazoleta.domain.api.*;
 import com.plazoleta.domain.spi.*;
 import com.plazoleta.domain.usecase.*;
+import com.plazoleta.infraestructure.input.rest.client.TraceFeignClient;
 import com.plazoleta.infraestructure.input.rest.client.TwilioFeignClient;
 import com.plazoleta.infraestructure.input.rest.client.UserFeingClient;
+import com.plazoleta.infraestructure.input.rest.client.adapter.TraceFeignAdapter;
 import com.plazoleta.infraestructure.input.rest.client.adapter.TwilioFeignAdapter;
 import com.plazoleta.infraestructure.input.rest.client.adapter.UserAdapter;
+import com.plazoleta.infraestructure.input.rest.client.mapper.ITraceMapper;
 import com.plazoleta.infraestructure.input.rest.client.mapper.ITwilioMapper;
 import com.plazoleta.infraestructure.out.jpa.adapter.*;
 import com.plazoleta.infraestructure.out.jpa.mapper.*;
@@ -35,6 +38,8 @@ public class BeanConfiguration {
     private final TwilioFeignClient twilioFeignClient;
     private final ITwilioMapper twilioMapper;
     private final UserFeingClient userFeingClient;
+    private final TraceFeignClient traceFeignClient;
+    private final ITraceMapper traceMapper;
 
     @Bean
     public IUserPersistencePort userPersistencePort() {
@@ -70,7 +75,7 @@ public class BeanConfiguration {
     public IOrderPersistencePort orderPersistencePort() {return new OrderJpaAdapter(orderRepository, orderEntityMapper);}
 
     @Bean
-    public IOrderServicePort orderServicePort() {return new OrderUseCase(orderPersistencePort(), restaurantPersistencePort(), userPersistencePort(), platePersistencePort(), orderPlatePersistencePort(), restEmpPersistencePort(), orderPinPersistencePort(), twilioFeignClientPort());}
+    public IOrderServicePort orderServicePort() {return new OrderUseCase(orderPersistencePort(), restaurantPersistencePort(), userPersistencePort(), platePersistencePort(), orderPlatePersistencePort(), restEmpPersistencePort(), orderPinPersistencePort(), twilioFeignClientPort(), traceFeignPersistencePort());}
 
     @Bean
     public IOrderPlatePersistencePort orderPlatePersistencePort(){return new OrderPlateJpaAdapter(orderPlateRepository, orderPlateEntityMapper);}
@@ -86,5 +91,9 @@ public class BeanConfiguration {
 
     @Bean
     public IOrderPinPersistencePort orderPinPersistencePort(){return new OrderPinJpaAdapter(orderPinRepository, orderPinEntityMapper);}
+
+    @Bean
+    public ITraceFeignPersistencePort traceFeignPersistencePort(){return new TraceFeignAdapter(traceFeignClient, traceMapper);
+    }
 
 }

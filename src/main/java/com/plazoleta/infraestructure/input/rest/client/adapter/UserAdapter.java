@@ -31,4 +31,8 @@ public class UserAdapter implements IUserPersistencePort {
         return userFeingClient.getUserByEmail(email).getId();
     }
 
+    @Override
+    public String getEmailByUserId(Long id) {
+        return userFeingClient.getUserById(id).getEmail();
+    }
 }

@@ -1,6 +1,7 @@
 package com.plazoleta.domain.usecase;
 
 import com.plazoleta.domain.api.IPlateServicePort;
+import com.plazoleta.domain.exception.InvalidErrorException;
 import com.plazoleta.domain.exception.NoDataFoundException;
 import com.plazoleta.domain.exception.RestaurantDoesnBelongException;
 import com.plazoleta.domain.model.Plate;
@@ -10,6 +11,10 @@ import com.plazoleta.domain.spi.IRestaurantPersistencePort;
 import com.plazoleta.domain.spi.IUserPersistencePort;
 
 import java.util.List;
+
+import static com.plazoleta.domain.constants.ErrorPlateConstants.*;
+import static com.plazoleta.domain.constants.PlateConstants.DEFAULT_PLATE_STATE;
+import static com.plazoleta.domain.constants.PlateConstants.MIN_PRICE_PLATE;
 
 public class PlateUseCase implements IPlateServicePort {
 
@@ -29,80 +34,65 @@ public class PlateUseCase implements IPlateServicePort {
     public void savePlate(Plate plate) {
         // Validar que el restaurante exista
         if (restaurantPersistencePort.getRestaurant(plate.getRestaurantId()) == null) {
-            throw new IllegalArgumentException("The specified restaurant does not exist.");
+            throw new InvalidErrorException(RESTAURANT_NOT_FOUND);
         }
-
         // Validar que la categoría exista
         if (categoryPersistencePort.getCategoryById(plate.getCategoryId()) == null) {
-            throw new IllegalArgumentException("The specified category does not exist.");
+            throw new InvalidErrorException(CATEGORY_NOT_FOUND);
         }
-
         // Validar precio
-        if (plate.getPrice() <= 0) {
-            throw new IllegalArgumentException("The price must be a positive value.");
+        if (plate.getPrice() <= MIN_PRICE_PLATE) {
+            throw new InvalidErrorException(PLATE_PRICE_NOT_DESERVED);
         }
-
         long authOwner= userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId());
         long restOwner= restaurantPersistencePort.getRestaurant(plate.getRestaurantId()).getOwnerId();
         if (authOwner != restOwner) {
             throw new IllegalArgumentException(new RestaurantDoesnBelongException());
         }
-
         // Establecer activo como true por defecto
-        plate.setActive(true);
-
+        plate.setActive(DEFAULT_PLATE_STATE);
         // Guardar el plato
         platePersistencePort.savePlate(plate);
     }
 
     @Override
     public Plate getPlateById(Long id) {
-
         return platePersistencePort.getPlateById(id);
     }
-
 
     @Override
     public List<Plate> getAllPlates(Long restaurantId, int page, int size) {
         List<Plate> plateList = platePersistencePort.getPlatesByRestaurantId(restaurantId, page, size);
         if(plateList.isEmpty()) {
-            throw new NoDataFoundException("No data found.");
+            throw new NoDataFoundException(DATA_ERROR);
         }
-        return platePersistencePort.getPlatesByRestaurantId(restaurantId, page, size);
+        return plateList;
     }
-
 
     @Override
     public void updatePlate(Plate plate) {
-
         long authOwner= userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId());
         long restOwner= restaurantPersistencePort.getRestaurant(plate.getRestaurantId()).getOwnerId();
         if (authOwner != restOwner) {
             throw new IllegalArgumentException(new RestaurantDoesnBelongException());
         }
-
         // Validar precio
-        if (plate.getPrice() <= 0) {
-            throw new IllegalArgumentException("The price must be a positive value.");
+        if (plate.getPrice() <= MIN_PRICE_PLATE) {
+            throw new InvalidErrorException(PLATE_PRICE_NOT_DESERVED);
         }
-
         // Validar que el restaurante exista
         if (restaurantPersistencePort.getRestaurant(plate.getRestaurantId()) == null) {
-            throw new IllegalArgumentException("The specified restaurant does not exist.");
+            throw new InvalidErrorException(RESTAURANT_NOT_FOUND);
         }
-
         // Obtener el plato una vez
         Plate existingPlate = platePersistencePort.getPlateById(plate.getId());
-
         // Verificar si el plato existe
         if (existingPlate == null) {
-            throw new IllegalArgumentException("Plate not found");
+            throw new InvalidErrorException(PLATE_NOT_FOUND);
         }
-
         // Actualizar los valores
         existingPlate.setDescription(plate.getDescription());
         existingPlate.setPrice(plate.getPrice());
-
         // Guardar los cambios
         platePersistencePort.updatePlate(existingPlate);
     }
@@ -112,14 +102,13 @@ public class PlateUseCase implements IPlateServicePort {
         long authOwner= userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId());
         long restOwner= restaurantPersistencePort.getRestaurant(plate.getRestaurantId()).getOwnerId();
         if (authOwner != restOwner) {
-            throw new IllegalArgumentException("This restaurant does not belong to the specified user.");
+            throw new InvalidErrorException(RESTAURANT_NOT_BELONG);
         }
         Plate existingPlate = platePersistencePort.getPlateById(plate.getId());
         existingPlate.setActive(plate.getActive());
         platePersistencePort.enableDisablePlate(existingPlate);
 
     }
-
 
     @Override
     public void deletePlateById(Long id) {

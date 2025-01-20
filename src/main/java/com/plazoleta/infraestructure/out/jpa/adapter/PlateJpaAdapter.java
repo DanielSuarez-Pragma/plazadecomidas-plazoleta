@@ -24,7 +24,7 @@ public class PlateJpaAdapter implements IPlatePersistencePort {
 
     @Override
     public Plate getPlateById(Long id) {
-        return plateEntityMapper.toPlate(plateRepository.findById(id).get());
+        return plateEntityMapper.toPlate(plateRepository.findPlateEntityById(id));
     }
 
     @Override
@@ -43,8 +43,6 @@ public class PlateJpaAdapter implements IPlatePersistencePort {
         plateRepository.save(plateEntityMapper.toEntity(plate));
     }
 
-
-
     @Override
     public void deletePlateById(Long id) {
         plateRepository.deleteById(id);
@@ -54,11 +52,9 @@ public class PlateJpaAdapter implements IPlatePersistencePort {
     public List<Plate> getPlatesByRestaurantId(Long restaurantId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<PlateEntity> plateEntities = plateRepository.findByRestaurantId(restaurantId, pageRequest);
-
         return plateEntities.getContent()
                 .stream()
                 .map(plateEntityMapper::toPlate)
                 .toList();
     }
-
 }

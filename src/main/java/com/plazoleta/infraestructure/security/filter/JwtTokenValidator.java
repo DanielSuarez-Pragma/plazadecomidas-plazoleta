@@ -20,11 +20,11 @@ import java.io.IOException;
 import java.util.Collection;
 
 
-public class jwtTokenValidator extends OncePerRequestFilter {
+public class JwtTokenValidator extends OncePerRequestFilter {
 
-    private JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
 
-    public jwtTokenValidator(JwtUtils jwtUtils) {
+    public JwtTokenValidator(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
     }
 

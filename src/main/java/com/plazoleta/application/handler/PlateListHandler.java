@@ -34,10 +34,7 @@ public class PlateListHandler implements IPlateListHandler {
 
     @Override
     public void savePlateInList(PlateListRequest plateListRequest) {
-        // Convert DTO to domain model
         Plate plate = plateListRequestMapper.toPlate(plateListRequest);
-        plate.setCategoryId(plateListRequest.getCategoryId());
-        plate.setActive(true); // Default active status
         plateServicePort.savePlate(plate);
     }
 
@@ -49,7 +46,6 @@ public class PlateListHandler implements IPlateListHandler {
     @Override
     public PlateListResponse getPlateFromList(Long id) {
             List<Plate> plates = plateServicePort.getAllPlates(0L,0,0);
-
             return (PlateListResponse) plates.stream().map(plate -> {
                 String categoryName = categoryServicePort.getCategoryById(plate.getCategoryId()).getName();
                 String restaurantName = restaurantServicePort.getRestaurant(plate.getRestaurantId()).getName();

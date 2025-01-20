@@ -7,8 +7,7 @@ import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        unmappedSourcePolicy = ReportingPolicy.IGNORE
-)
+        unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface ITwilioMapper {
     default MessageRequestDto toSmsRequest(MessageModel smsMessageModel) {
         if ( smsMessageModel == null ) {

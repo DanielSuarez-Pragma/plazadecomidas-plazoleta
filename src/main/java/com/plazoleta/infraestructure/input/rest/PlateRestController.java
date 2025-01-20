@@ -31,7 +31,7 @@ public class PlateRestController {
     @GetMapping("/getPlates/restaurant/{id}/size/{size}/page/{page}")
     @PreAuthorize("hasAuthority('CLIENTe')")
     public ResponseEntity<List<PlateListResponse>> getAllPlatesFromList(@PathVariable Long id, @PathVariable Integer size, @PathVariable Integer page) {
-       return ResponseEntity.ok(plateListHandler.getAllPlatesFromList(id, page, size));
+        return ResponseEntity.ok(plateListHandler.getAllPlatesFromList(id, page, size));
     }
 
     @GetMapping("/{id}")

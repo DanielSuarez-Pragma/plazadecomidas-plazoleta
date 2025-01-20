@@ -1,6 +1,7 @@
 package com.plazoleta.domain.usecase;
 
 import com.plazoleta.domain.api.IRestEmpServicePort;
+import com.plazoleta.domain.exception.InvalidErrorException;
 import com.plazoleta.domain.model.RestaurantEmployee;
 import com.plazoleta.domain.spi.IRestEmpPersistencePort;
 import com.plazoleta.domain.spi.IRestaurantPersistencePort;
@@ -8,6 +9,8 @@ import com.plazoleta.domain.spi.IUserPersistencePort;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
+
+import static com.plazoleta.domain.constants.ErrorRestConstants.*;
 
 @AllArgsConstructor
 public class RestEmpUseCase implements IRestEmpServicePort {
@@ -19,12 +22,12 @@ public class RestEmpUseCase implements IRestEmpServicePort {
     @Override
     public void saveRestEmp(RestaurantEmployee restaurantEmployee, List<Long> employeeIds) {
         if (restaurantPersistencePort.getRestaurant(restaurantEmployee.getRestaurantId()) == null) {
-            throw new IllegalArgumentException("The specified restaurant does not exist.");
+            throw new InvalidErrorException(NO_REST_FOUNDS);
         }
         long authOwner= userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId());
         long restOwner= restaurantPersistencePort.getRestaurant(restaurantEmployee.getRestaurantId()).getOwnerId();
         if (authOwner != restOwner) {
-            throw new IllegalArgumentException("This restaurant does not belong to the specified user.");
+            throw new InvalidErrorException(NO_OWNER_REST);
         }
 
         employeeIds.forEach(employee->{
@@ -33,7 +36,7 @@ public class RestEmpUseCase implements IRestEmpServicePort {
             }
 
             if (findByRestaurantIdAndEmployeeId(restaurantEmployee.getRestaurantId(), employee) != null) {
-                throw new IllegalArgumentException("This permission already exists.");
+                throw new InvalidErrorException(PERMISSION_ALREADY_EXIST);
             }
 
         });
@@ -47,12 +50,12 @@ public class RestEmpUseCase implements IRestEmpServicePort {
     @Override
     public void deleteRestEmp(RestaurantEmployee restaurantEmployee, List<Long> employeeIds) {
         if (restaurantPersistencePort.getRestaurant(restaurantEmployee.getRestaurantId()) == null) {
-            throw new IllegalArgumentException("The specified restaurant does not exist.");
+            throw new InvalidErrorException(NO_REST_FOUNDS);
         }
         long authOwner= userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId());
         long restOwner= restaurantPersistencePort.getRestaurant(restaurantEmployee.getRestaurantId()).getOwnerId();
         if (authOwner != restOwner) {
-            throw new IllegalArgumentException("This restaurant does not belong to the specified user.");
+            throw new InvalidErrorException(NO_OWNER_REST);
         }
         employeeIds.forEach(employeeId -> {
             restaurantEmployee.setEmployeeId(employeeId);

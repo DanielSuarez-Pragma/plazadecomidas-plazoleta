@@ -1,5 +1,7 @@
 package com.plazoleta.domain.usecase;
 
+import com.plazoleta.domain.exception.InvalidErrorException;
+import com.plazoleta.domain.exception.NoDataFoundException;
 import com.plazoleta.domain.model.Restaurant;
 import com.plazoleta.domain.spi.IRestaurantPersistencePort;
 import com.plazoleta.domain.spi.IUserPersistencePort;
@@ -8,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -41,49 +45,75 @@ class RestaurantUseCaseTest {
     }
 
     @Test
-    void saveRestaurant_WhenOwnerIsValid_ShouldSaveRestaurant() {
-        // Mock para validar el propietario
-        when(userPersistencePort.getUserById(1L)).thenReturn(1L);
+    void testSaveRestaurant_Success() {
+        // Datos de prueba
+        long authenticatedOwnerId = 1L;
+        long ownerRoleId = 2L; // Suponiendo que este es el ID del rol OWNER
 
-        // Ejecutar metodo
-        restaurantUseCase.saveRestaurant(restaurant);
+        // Configuración del mock
+        when(userPersistencePort.getAuthenticatedUserId()).thenReturn("auth-user-id");
+        when(userPersistencePort.getUserByEmail("auth-user-id")).thenReturn(authenticatedOwnerId);
+        when(userPersistencePort.getUserById(restaurant.getOwnerId())).thenReturn(ownerRoleId);
 
-        // Verificar interacciones
+        // Llamar al método
+        assertDoesNotThrow(() -> restaurantUseCase.saveRestaurant(restaurant));
+
+        // Verificar que se guardó correctamente
         verify(restaurantPersistencePort, times(1)).saveRestaurant(restaurant);
     }
 
     @Test
-    void saveRestaurant_WhenOwnerIsInvalid_ShouldThrowException() {
-        // Mock para simular un propietario no válido
-        when(userPersistencePort.getUserById(1L)).thenReturn(2L);
+    void testSaveRestaurant_ThrowsInvalidErrorException() {
+        // Datos de prueba
+        long authenticatedOwnerId = 2L; // Usuario autenticado diferente al propietario
 
-        // Verificar que lanza excepción
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> restaurantUseCase.saveRestaurant(restaurant));
+        // Configuración del mock
+        when(userPersistencePort.getAuthenticatedUserId()).thenReturn("auth-user-id");
+        when(userPersistencePort.getUserByEmail("auth-user-id")).thenReturn(authenticatedOwnerId);
+        when(userPersistencePort.getUserById(restaurant.getOwnerId())).thenReturn(3L); // Rol no válido
 
-        assertEquals("No es un owner", exception.getMessage());
-        verify(restaurantPersistencePort, never()).saveRestaurant(any());
+        // Verificar que lanza la excepción
+        assertThrows(InvalidErrorException.class, () -> restaurantUseCase.saveRestaurant(restaurant));
+
+        // Verificar que no se guardó nada
+        verify(restaurantPersistencePort, never()).saveRestaurant(any(Restaurant.class));
     }
 
     @Test
-    void getRestaurant_ShouldReturnRestaurant() {
-        // Mock para simular la búsqueda
-        when(restaurantPersistencePort.getRestaurant(1L)).thenReturn(restaurant);
+    void testGetAllRestaurants_ReturnsRestaurantList() {
+        // Datos de prueba
+        int page = 0;
+        int size = 5;
+        List<Restaurant> restaurantList = List.of(restaurant);
 
-        // Ejecutar metodo
-        Restaurant result = restaurantUseCase.getRestaurant(1L);
+        // Configuración del mock
+        when(restaurantPersistencePort.getAllRestaurants(page, size)).thenReturn(restaurantList);
 
-        // Validar resultado
+        // Llamar al método
+        List<Restaurant> result = restaurantUseCase.getAllRestaurants(page, size);
+
+        // Verificar el resultado
         assertNotNull(result);
-        assertEquals(restaurant.getName(), result.getName());
-        verify(restaurantPersistencePort, times(1)).getRestaurant(1L);
+        assertEquals(1, result.size());
+        assertEquals("Restaurante Prueba", result.get(0).getName());
+
+        // Verificar que el método mock fue llamado
+        verify(restaurantPersistencePort, times(1)).getAllRestaurants(page, size);
     }
 
     @Test
-    void deleteRestaurant_ShouldCallDeleteRestaurant() {
-        // Ejecutar metodo
-        restaurantUseCase.deleteRestaurant(1L);
+    void testGetAllRestaurants_ThrowsNoDataFoundException() {
+        // Datos de prueba
+        int page = 0;
+        int size = 5;
 
-        // Verificar interacción
-        verify(restaurantPersistencePort, times(1)).deleteRestaurant(1L);
+        // Configuración del mock
+        when(restaurantPersistencePort.getAllRestaurants(page, size)).thenReturn(List.of());
+
+        // Verificar que lanza la excepción
+        assertThrows(NoDataFoundException.class, () -> restaurantUseCase.getAllRestaurants(page, size));
+
+        // Verificar que el método mock fue llamado
+        verify(restaurantPersistencePort, times(1)).getAllRestaurants(page, size);
     }
 }

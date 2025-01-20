@@ -1,6 +1,8 @@
 package com.plazoleta.infraestructure.input.rest;
 
 import com.plazoleta.application.dto.request.OrderRequest;
+import com.plazoleta.application.dto.request.TraceClientResponse;
+import com.plazoleta.application.dto.response.CancelResponse;
 import com.plazoleta.application.dto.response.OrderResponse;
 import com.plazoleta.application.handler.IOrderListHandler;
 import lombok.RequiredArgsConstructor;
@@ -53,4 +55,21 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
+    @PutMapping("/cancel/{id}")
+    @PreAuthorize("hasAuthority('CLIENTE')")
+    public ResponseEntity<CancelResponse> cancelOrder(@PathVariable Long id){
+        return ResponseEntity.ok(orderListHandler.cancelOrder(id));
+    }
+
+    @GetMapping("/traceClient")
+    @PreAuthorize("hasAuthority('CLIENTE')")
+    public ResponseEntity<List<TraceClientResponse>> traceClient(){
+        return ResponseEntity.ok(orderListHandler.traceClient());
+    }
+
+    @GetMapping("/traceRestaurant/{id}")
+    @PreAuthorize("hasAuthority('CLIENTE')")
+    public ResponseEntity<List<TraceClientResponse>> traceRestaurant(@PathVariable Long id){
+        return ResponseEntity.ok(orderListHandler.traceRestaurant(id));
+    }
 }

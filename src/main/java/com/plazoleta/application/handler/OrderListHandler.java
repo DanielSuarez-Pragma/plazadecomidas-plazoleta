@@ -1,6 +1,8 @@
 package com.plazoleta.application.handler;
 
 import com.plazoleta.application.dto.request.OrderRequest;
+import com.plazoleta.application.dto.request.TraceClientResponse;
+import com.plazoleta.application.dto.response.CancelResponse;
 import com.plazoleta.application.dto.response.OrderResponse;
 import com.plazoleta.application.mapper.request.OrderListRequestMapper;
 import com.plazoleta.domain.api.IOrderServicePort;
@@ -44,5 +46,20 @@ public class OrderListHandler implements IOrderListHandler{
     @Override
     public void deliverOrder(Long orderID, String pin) {
         orderServicePort.deliverOrder(orderID, pin);
+    }
+
+    @Override
+    public CancelResponse cancelOrder(Long id) {
+        return orderListRequestMapper.toCancelResponse(orderServicePort.cancelOrder(id));
+    }
+
+    @Override
+    public List<TraceClientResponse> traceClient() {
+        return orderListRequestMapper.toResponseTrace(orderServicePort.getTraceClient());
+    }
+
+    @Override
+    public List<TraceClientResponse> traceRestaurant(Long restaurantId) {
+        return orderListRequestMapper.toResponseTrace(orderServicePort.getTraceRestaurant(restaurantId));
     }
 }

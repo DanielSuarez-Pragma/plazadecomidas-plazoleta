@@ -28,4 +28,5 @@ users-service:
 send-service:
   url: http://localhost:8092
 
-privateKeyL: ${privateKey}
+trace-service:
+  url: http://localhost:8093

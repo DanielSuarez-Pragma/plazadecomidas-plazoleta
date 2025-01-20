@@ -1,6 +1,5 @@
 package com.plazoleta.infraestructure.out.jpa.adapter;
 
-import com.plazoleta.domain.exception.NoDataFoundException;
 import com.plazoleta.domain.model.Restaurant;
 import com.plazoleta.domain.spi.IRestaurantPersistencePort;
 import com.plazoleta.infraestructure.out.jpa.entity.RestaurantEntity;
@@ -13,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+
+import static com.plazoleta.domain.constants.RestaurantConstants.NAME;
 
 @RequiredArgsConstructor
 public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
@@ -27,29 +28,16 @@ public class RestaurantJpaAdapter implements IRestaurantPersistencePort {
 
     @Override
     public Restaurant getRestaurant(Long id) {
-        return restEntityMapper.toRestaurant(restaurantRepository.findById(id).get());
+        return restEntityMapper.toRestaurant(restaurantRepository.findRestaurantEntityById(id));
     }
 
     @Override
     public List<Restaurant> getAllRestaurants(int page, int size) {
-        // Crear el PageRequest con ordenación alfabética
-        Pageable pageRequest = PageRequest.of(page , size, Sort.by(Sort.Direction.ASC, "name"));
-
-        // Recuperar las entidades paginadas
+        Pageable pageRequest = PageRequest.of(page , size, Sort.by(Sort.Direction.ASC, NAME));
         Page<RestaurantEntity> restaurantEntitiesPage = restaurantRepository.findAll(pageRequest);
-        // Validar si hay datos disponibles para esa página
-        if (restaurantEntitiesPage.isEmpty()) {
-            throw new NoDataFoundException("Error");
-        }
-
-        // Obtener la lista de contenido
         List<RestaurantEntity> restaurants = restaurantEntitiesPage.getContent();
-
-        // Convertir las entidades a modelo de dominio y devolver
         return restEntityMapper.toRestaurantList(restaurants);
     }
-
-
 
     @Override
     public void deleteRestaurant(Long id) {

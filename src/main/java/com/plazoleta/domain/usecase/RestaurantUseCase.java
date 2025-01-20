@@ -1,11 +1,18 @@
 package com.plazoleta.domain.usecase;
 
 import com.plazoleta.domain.api.IRestaurantServicePort;
+import com.plazoleta.domain.exception.InvalidErrorException;
+import com.plazoleta.domain.exception.NoDataFoundException;
 import com.plazoleta.domain.model.Restaurant;
 import com.plazoleta.domain.spi.IRestaurantPersistencePort;
 import com.plazoleta.domain.spi.IUserPersistencePort;
 
 import java.util.List;
+import java.util.Objects;
+
+import static com.plazoleta.domain.constants.ErrorRestConstants.NO_OWNER_REST;
+import static com.plazoleta.domain.constants.ErrorRestConstants.NO_REST_FOUNDS;
+import static com.plazoleta.domain.constants.RestaurantConstants.OWNER_ROLE_ID;
 
 public class RestaurantUseCase implements IRestaurantServicePort {
 
@@ -22,11 +29,11 @@ public class RestaurantUseCase implements IRestaurantServicePort {
         long authOwner = userPersistencePort.getUserByEmail(userPersistencePort.getAuthenticatedUserId());
         long restOwner = restaurant.getOwnerId();
         userPersistencePort.getUserById(restaurant.getOwnerId());
-        if (userPersistencePort.getUserById(restaurant.getOwnerId()) == 1 && authOwner == restOwner) {
-            restaurantPersistencePort.saveRestaurant(restaurant);
-        }else {
-            throw new IllegalArgumentException("No es un owner para el restaurante");
+        if (!Objects.equals(userPersistencePort.getUserById(restaurant.getOwnerId()), OWNER_ROLE_ID) && authOwner != restOwner) {
+            throw new InvalidErrorException(NO_OWNER_REST);
         }
+
+        restaurantPersistencePort.saveRestaurant(restaurant);
     }
 
     @Override
@@ -36,9 +43,12 @@ public class RestaurantUseCase implements IRestaurantServicePort {
 
     @Override
     public List<Restaurant> getAllRestaurants(int page, int size) {
-        return restaurantPersistencePort.getAllRestaurants(page, size);
+        List<Restaurant> restaurants = restaurantPersistencePort.getAllRestaurants(page, size);
+        if (restaurants.isEmpty()) {
+            throw new NoDataFoundException(NO_REST_FOUNDS);
+        }
+        return restaurants;
     }
-
 
     @Override
     public void deleteRestaurant(Long id) {

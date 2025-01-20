@@ -1,4 +1,4 @@
-package com.plazoleta.infraestructure.input.rest.client.dto;
+package com.plazoleta.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
-    private Long roleId;
+public class CancelMessage {
+    private String message;
 }
-
